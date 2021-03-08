@@ -1534,7 +1534,7 @@
   )
 
   (module Connector_IDC:IDC-Header_2x03_P2.54mm_Vertical (layer F.Cu) (tedit 5EAC9A07) (tstamp 60465455)
-    (at -60 15.5 90)
+    (at -59.944 15.748 90)
     (descr "Through hole IDC box header, 2x03, 2.54mm pitch, DIN 41651 / IEC 60603-13, double rows, https://docs.google.com/spreadsheets/d/16SsEcesNF15N3Lb4niX7dcUr-NY5_MFPQhobNuNppn4/edit#gid=0")
     (tags "Through hole vertical IDC box header THT 2x03 2.54mm double row")
     (path /60E6913F)

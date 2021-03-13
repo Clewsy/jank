@@ -312,37 +312,37 @@ F 3 "~" H 3800 7050 50  0001 C CNN
 	1    3800 6750
 	1    0    0    -1  
 $EndComp
-Wire Notes Line
+Wire Notes Line width 20
 	1150 1150 5150 1150
-Wire Notes Line
+Wire Notes Line width 20
 	1150 2150 5150 2150
-Wire Notes Line
+Wire Notes Line width 20
 	1150 3150 5150 3150
-Wire Notes Line
+Wire Notes Line width 20
 	1150 5150 5150 5150
-Wire Notes Line
+Wire Notes Line width 20
 	1150 7150 5150 7150
-Wire Notes Line
+Wire Notes Line width 20
 	4150 1150 4150 7150
-Wire Notes Line
+Wire Notes Line width 20
 	3150 1150 3150 7150
-Wire Notes Line
+Wire Notes Line width 20
 	1150 1150 1150 7150
-Wire Notes Line
+Wire Notes Line width 20
 	5150 1150 5150 7150
-Wire Notes Line
+Wire Notes Line width 20
 	2150 6150 2150 1150
-Wire Notes Line
+Wire Notes Line width 20
 	1150 6150 4150 6150
-Wire Notes Line
+Wire Notes Line width 20
 	1150 4150 4150 4150
-Text Notes 1150 1300 0    100  ~ 0
+Text Notes 1150 1300 0    100  ~ 20
 M0
-Text Notes 2150 1300 0    100  ~ 0
+Text Notes 2150 1300 0    100  ~ 20
 M1
-Text Notes 3150 1300 0    100  ~ 0
+Text Notes 3150 1300 0    100  ~ 20
 M2
-Text Notes 4150 1300 0    100  ~ 0
+Text Notes 4150 1300 0    100  ~ 20
 M3
 Wire Wire Line
 	1250 1650 1200 1650
@@ -995,39 +995,39 @@ Wire Wire Line
 	5100 3050 5100 2750
 Wire Wire Line
 	5100 2750 5000 2750
-Text Notes 1150 2300 0    100  ~ 0
+Text Notes 1150 2300 0    100  ~ 20
 NL
-Text Notes 2150 2300 0    100  ~ 0
+Text Notes 2150 2300 0    100  ~ 20
 /
-Text Notes 3150 2300 0    100  ~ 0
+Text Notes 3150 2300 0    100  ~ 20
 *
-Text Notes 4150 2300 0    100  ~ 0
+Text Notes 4150 2300 0    100  ~ 20
 -
-Text Notes 4150 3300 0    100  ~ 0
+Text Notes 4150 3300 0    100  ~ 20
 +
-Text Notes 3150 3300 0    100  ~ 0
+Text Notes 3150 3300 0    100  ~ 20
 9
-Text Notes 2150 3300 0    100  ~ 0
+Text Notes 2150 3300 0    100  ~ 20
 8
-Text Notes 1150 3300 0    100  ~ 0
+Text Notes 1150 3300 0    100  ~ 20
 7
-Text Notes 1150 4300 0    100  ~ 0
+Text Notes 1150 4300 0    100  ~ 20
 4
-Text Notes 2150 4300 0    100  ~ 0
+Text Notes 2150 4300 0    100  ~ 20
 5
-Text Notes 3150 4300 0    100  ~ 0
+Text Notes 3150 4300 0    100  ~ 20
 6
-Text Notes 1150 5300 0    100  ~ 0
+Text Notes 1150 5300 0    100  ~ 20
 1
-Text Notes 2150 5300 0    100  ~ 0
+Text Notes 2150 5300 0    100  ~ 20
 2
-Text Notes 3150 5300 0    100  ~ 0
+Text Notes 3150 5300 0    100  ~ 20
 3
-Text Notes 4150 5300 0    100  ~ 0
+Text Notes 4150 5300 0    100  ~ 20
 ENT
-Text Notes 1150 6300 0    100  ~ 0
+Text Notes 1150 6300 0    100  ~ 20
 0
-Text Notes 3150 6300 0    100  ~ 0
+Text Notes 3150 6300 0    100  ~ 20
 .
 $Comp
 L Device:LED LED_NUMLOCK0
@@ -1440,7 +1440,7 @@ L Device:R R8
 U 1 1 60C3E138
 P 7600 1950
 F 0 "R8" V 7600 1900 50  0000 L CNN
-F 1 "300" V 7550 2050 50  0000 L CNN
+F 1 "100" V 7550 2050 50  0000 L CNN
 F 2 "Resistor_SMD:R_1206_3216Metric_Pad1.42x1.75mm_HandSolder" V 7530 1950 50  0001 C CNN
 F 3 "~" H 7600 1950 50  0001 C CNN
 	1    7600 1950
@@ -1773,7 +1773,7 @@ NoConn ~ 7400 4250
 Text Notes 7350 7500 0    100  ~ 0
 numpty
 Text Notes 8150 7650 0    79   ~ 0
-20210308
+20210313
 Text Notes 10550 7650 0    79   ~ 0
 0
 $Comp

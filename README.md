@@ -1,4 +1,4 @@
-# numpty
+# jank
 
-USB numeric keypad with some macro buttons.
+Just ANother Keypad is a USB numeric keypad with some macro buttons.
 

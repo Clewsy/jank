@@ -1,3 +1,4 @@
 (fp_lib_table
   (lib (name numpty)(type KiCad)(uri ${KIPRJMOD}/numpty.pretty)(options "")(descr ""))
+  (lib (name jank)(type KiCad)(uri ${KIPRJMOD}/jank.pretty)(options "")(descr ""))
 )

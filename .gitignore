@@ -7,6 +7,5 @@ firmware/*.map
 firmware/*.sym
 firmware/obj
 firmware/lib/LUFA
-firmware/.vscode
 hardware/gerber
 .vscode

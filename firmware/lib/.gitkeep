@@ -1,0 +1,4 @@
+The lib directory for this project contains only the LUFA library.
+https://github.com/abcminiuser/lufa/
+
+Run the "update_lufa.sh" script to clone the relevant part of the LUFA library to the lib directory.

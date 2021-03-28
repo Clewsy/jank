@@ -1,10 +1,15 @@
 #include "keymap.h"
 
+// Define the physical row and column pins on the microcontroller to be scanned for key presses.
+const uint8_t key_row_array[] = {ROW1, ROW2, ROW3, ROW4, ROW5};
+const uint8_t key_col_array[] = {COL0, COL1, COL2, COL3};
+const uint8_t macro_row_array[] = {ROW0};
+const uint8_t macro_col_array[] = {COL0, COL1, COL2, COL3};
+
 
 // The key map array - for regular key strokes including media control keys.
-const char KEYMAP[NUM_ROWS][NUM_COLS] PROGMEM = {
-	// Column 0                     	  	Column 1					Column 2					Column 3
-	{HID_KEYBOARD_SC_A,				HID_MEDIACONTROLLER_SC_VOLUME_UP,		HID_MEDIACONTROLLER_SC_MUTE,			HID_MEDIACONTROLLER_SC_VOLUME_DOWN},	// Row 0
+const char KEYMAP[NUM_KEY_ROWS][NUM_KEY_COLS] PROGMEM = {
+	// Column 0					Column 1					Column 2					Column 3
 	{HID_KEYBOARD_SC_NUM_LOCK,			HID_KEYBOARD_SC_KEYPAD_SLASH,			HID_KEYBOARD_SC_KEYPAD_ASTERISK,		HID_KEYBOARD_SC_KEYPAD_MINUS},		// Row 1
 	{HID_KEYBOARD_SC_KEYPAD_7_AND_HOME,		HID_KEYBOARD_SC_KEYPAD_8_AND_UP_ARROW,		HID_KEYBOARD_SC_KEYPAD_9_AND_PAGE_UP,		HID_KEYBOARD_SC_KEYPAD_PLUS},		// Row 2
 	{HID_KEYBOARD_SC_KEYPAD_4_AND_LEFT_ARROW,	HID_KEYBOARD_SC_KEYPAD_5,			HID_KEYBOARD_SC_KEYPAD_6_AND_RIGHT_ARROW,	0x00},					// Row 3
@@ -13,55 +18,41 @@ const char KEYMAP[NUM_ROWS][NUM_COLS] PROGMEM = {
 };
 
 
+// Macro definitions.  Currently just simple text strings can be used as macros.
+#define MACRO_0 "TEST_0\n"
+#define MACRO_1 "The quick brown fox "
+#define MACRO_2 "jumped over the lazy dog.\n"
+#define MACRO_3 "`1234567890-=~!@#$%^&*()_+qwertyuiop[]\\QWERTYUIOP{}|asdfghjkl;'ASDFGHJKL:\"zxcvbnm,./ZXCVBNM<>?\n"
+
+// The macro map array - for key strokes that are mapped as macros.
+const char MACROMAP[NUM_MACRO_ROWS][NUM_MACRO_COLS][MAX_MACRO_CHARS] PROGMEM = {
+	// Column 0	Column 1	Column 2	Column 3
+	{MACRO_0,	MACRO_1,	MACRO_2,	MACRO_3}	// Row 0
+};
 
 /*
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Example configuration: All four keys are media controls, toggle, stop, previous & next.
-const uint8_t KEY_PIN_ARRAY[] = {KEY_1, KEY_2, KEY_3, KEY_4};
-const uint8_t MACRO_PIN_ARRAY[] = {};
+Configuration of the jank keypad.
 
-const char KEY_MAP[] PROGMEM = {
-	HID_MEDIACONTROLLER_SC_TOGGLE,		// Key 1
-	HID_MEDIACONTROLLER_SC_STOP,		// Key 2
-	HID_MEDIACONTROLLER_SC_PREVIOUS,	// Key 3
-	HID_MEDIACONTROLLER_SC_NEXT		// Key 4
-};
+	 COL0 COL1 COL2 COL3
+	_____________________
+	|    |    |    |    |
+ROW0	| 00 | 01 | 02 | 03 |
+	|____|____|____|____|
+	_____________________
+	|    |    |    |    |
+ROW1	| 10 | 11 | 12 | 13 |
+	|____|____|____|____|
+	|    |    |    |    |
+ROW2	| 20 | 21 | 22 | 23 |
+	|____|____|____|    |
+	|    |    |    |    |
+ROW3	| 30 | 31 | 32 |    |
+	|____|____|____|____|
+	|    |    |    |    |
+ROW4	| 40 | 41 | 42 | 43 |
+	|____|____|____|    |
+	|         |    |    |
+ROW5	| 50      | 52 |    |
+	|_________|____|____|
 
-const char MACRO_MAP[][MAX_MACRO_CHARS] PROGMEM = {};
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-*/
-
-/*
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Example configuration: Top two keys are media controls (toggle & stop), bottom two keys are macros.
-const uint8_t KEY_PIN_ARRAY[] = {KEY_1, KEY_2};
-const uint8_t MACRO_PIN_ARRAY[] = {KEY_3, KEY_4};
-
-const char KEY_MAP[] PROGMEM = {
-	HID_MEDIACONTROLLER_SC_TOGGLE,		// Key 1
-	HID_MEDIACONTROLLER_SC_STOP,		// Key 2
-};
-
-const char MACRO_MAP[][MAX_MACRO_CHARS] PROGMEM = {
-	{"      _\n     ( )\n      H\n      H\n     _H_\n  .-'-.-'-.\n /         \\\n|           |\n|   .-------'._\n|  / /  '.' '. \\\n|  \\ \\ @   @ / /\n|   '---------'\n|    _______|\n|  .'-+-+-+|\n|  '.-+-+-+|\n|    \"\"\"\"\"\" |\n'-.__   __.-'\n     \"\"\"\n\n"},				// Key 3.
-	{"        _\n      /X \\ \n    _------_\n   /        \\\n  |          |\n  |          |\n  |     __  __)\n  |    /  \\/  \\\n /\\/\\ (o   )o  )\n /c    \\__/ --.\n \\_   _-------'\n  |  /         \\\n  | | '\\________)\n  |  \\_____)\n  |_____ |\n |_____/\\/\\\n /        \\\n\n"},	// Key 4.
-};
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-*/
-
-/*
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Example configuration: Keys are equivalent to Left-Shift, 'a', 'b' & 'c'.
-const uint8_t KEY_PIN_ARRAY[] = {KEY_1, KEY_2, KEY_3, KEY_4};
-const uint8_t MACRO_PIN_ARRAY[] = {};
-
-const char KEY_MAP[] PROGMEM = {
-	HID_KEYBOARD_SC_LEFT_SHIFT,	// Key 1
-	HID_KEYBOARD_SC_A,		// Key 2
-	HID_KEYBOARD_SC_B,		// Key 3
-	HID_KEYBOARD_SC_C		// Key 4
-};
-
-const char MACRO_MAP[][MAX_MACRO_CHARS] PROGMEM = {};
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 */

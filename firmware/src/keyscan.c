@@ -48,62 +48,33 @@ void handle_key(char key, keyscan_report_t *keyscan_report)
 }
 
 
-
-#include <util/delay.h>
 void create_keyscan_report(keyscan_report_t *keyscan_report)
 {
 	// Start with a blank keyscan report.
 	memset(keyscan_report, 0, sizeof(keyscan_report_t));
 
-
-	static const uint8_t row_array[6] = {ROW0, ROW1, ROW2, ROW3, ROW4, ROW5};
-	static const uint8_t col_array[4] = {COL0, COL1, COL2, COL3};
-
-
 	// Loop through for each row.
-	for(uint8_t r = 0; r < sizeof(row_array); r++)
+	for(uint8_t r = 0; r < sizeof(key_row_array); r++)
 	{
 		// Set low current row (enable check).
-		ROWS_PORT &= ~(1 << row_array[r]);
+		ROWS_PORT &= ~(1 << key_row_array[r]);
 
 		// Wait until row is set low before continuing, otherwise column checks can be missed.
-		while(!(~ROWS_PINS & (1 << row_array[r]))) {}
+		while(!(~ROWS_PINS & (1 << key_row_array[r]))) {}
 
 		// Loop through for each column in the current row.
-		for(uint8_t c = 0; c < sizeof(col_array); c++)
+		for(uint8_t c = 0; c < sizeof(key_col_array); c++)
 		{
 			// If the button in the current row and column is pressed, handle it.
-			if(~COLS_PINS & (1 << col_array[c]))
+			if(~COLS_PINS & (1 << key_col_array[c]))
 			{
 				handle_key(pgm_read_byte(&KEYMAP[r][c]), keyscan_report);
 			}
 		}
 
 		// Set high current row (disable check).
-		ROWS_PORT |= (1 << row_array[r]);
+		ROWS_PORT |= (1 << key_row_array[r]);
 	}
-
-
-
-
-
-
-
-
-
-
-
-/*
-	// Loop through for each key.
-	for(uint8_t k = 0; k < sizeof(KEY_PIN_ARRAY); k++)
-	{
-		// If the current key k is pressed.
-		if(~KEYS_PINS & (1 << KEY_PIN_ARRAY[k]))
-		{
-			handle_key(pgm_read_byte(&KEY_MAP[k]), keyscan_report);
-		}
-	}
-*/
 }
 
 // Returns the address of a macro, i.e. first character in a string to be "typed".
@@ -111,15 +82,33 @@ void create_keyscan_report(keyscan_report_t *keyscan_report)
 const char *scan_macro_keys(void)
 {
 
-	static const char NO_MACRO[] PROGMEM = "";	// Needed when no macro key is pressed.
+//	static const char NO_MACRO[] PROGMEM = "";	// Needed when no macro key is pressed.
 
-	// Loop through for each macro key.
-//	for(uint8_t m = 0; m < sizeof(MACRO_PIN_ARRAY); m++)
-//	{
-		// If the macro key m is pressed, return the address of the macro string mapped in "keymap.c".
-//		if(~KEYS_PINS & (1 << MACRO_PIN_ARRAY[m])) return(&MACRO_MAP[m][0]);
-//	}
-	return(&NO_MACRO[0]);	// Return the address of a blank array when no macro key is pressed.
+	// Loop through for each row.
+	for(uint8_t r = 0; r < sizeof(macro_row_array); r++)
+	{
+		// Set low current row (enable check).
+		ROWS_PORT &= ~(1 << macro_row_array[r]);
+
+		// Wait until row is set low before continuing, otherwise column checks can be missed.
+		while(!(~ROWS_PINS & (1 << macro_row_array[r]))) {}
+
+		// Loop through for each column in the current row.
+		for(uint8_t c = 0; c < sizeof(macro_col_array); c++)
+		{
+			// If the button in the current row and column is pressed, handle it.
+			if(~COLS_PINS & (1 << macro_col_array[c]))
+			{
+				return(&MACROMAP[r][c][0]);
+			}
+		}
+
+		// Set high current row (disable check).
+		ROWS_PORT |= (1 << macro_row_array[r]);
+	}
+
+	// If no macro key pressed, return 0.
+	return(0);
 }
 
 // Converts a character to a keyboard scancode.

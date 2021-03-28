@@ -327,7 +327,6 @@ void SendNextKeyboardReport(void)
 	_delay_ms(DEBOUNCE_MS);	// Dirty delay to prevent button bounce registering as a double-press.
 }
 
-
 // Sends the next media controller HID report to the host, via the keyboard data endpoint.
 // This function is very similar to the keyboard equivalent but was created for media controller reports.
 void SendNextMediaControllerReport(void)
@@ -394,21 +393,22 @@ void ReceiveNextKeyboardReport(void)
 		Endpoint_ClearOUT();
 	}
 }
-
-// Send the multiple sequential reports that make up a define macro.
-void SendMacroReports(const char *macro_string)
+void SendMacroReports()
 {
-	static const char *last_macro_string = "";	// Remember the last run macro.
+	const char *macro = scan_macro_keys();
 
-	if(last_macro_string != macro_string)		// Only if the macro has changed - prevents re-run if key held.
+	if (macro)
 	{
+		// Loop for each character until null character reached, or max chars exceeded.
 		uint8_t i = 0;
-		while(pgm_read_byte(&macro_string[i]) != '\0')
+		while((pgm_read_byte(&macro[i])) && (i < MAX_MACRO_CHARS))
 		{
-			type_key(pgm_read_byte(&macro_string[i++]));
+			type_key(pgm_read_byte(&macro[i++]));
 			USB_USBTask();	// In the lufa library.
 		}
-		last_macro_string = macro_string;
+
+		// Wait until the macro key is released (prevents repeats).
+		while(scan_macro_keys()) USB_USBTask();
 	}
 }
 
@@ -448,7 +448,7 @@ void HID_Task(void)
 	if (USB_DeviceState != DEVICE_STATE_Configured) return;
 
 	// Check for and action any key presses designated as macros.
-//	SendMacroReports(scan_macro_keys());
+	SendMacroReports();
 
 	// Update the keyscan report - will be used for creating both the keyboard and media controller reports.
 	create_keyscan_report(&keyscan_report);

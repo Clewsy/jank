@@ -3,37 +3,8 @@
 #include <stdbool.h>		// Included to use bool type and true/false values.
 #include "keymap.h"
 
-
-
-
-#define ROWS_PORT	PORTD
-#define ROWS_DDR	DDRD
-#define ROWS_PINS	PIND
-#define COLS_PORT	PORTF
-#define COLS_DDR	DDRF
-#define COLS_PINS	PINF
-
-
-
-#define ROW0	PD0
-#define ROW1	PD1
-#define ROW2	PD2
-#define ROW3	PD3
-#define ROW4	PD4
-#define ROW5	PD5
-#define COL0	PF0
-#define COL1	PF1
-#define COL2	PF4
-#define COL3	PF5
-// !IMPORTANT! - By default, the JTAGEN (JTAG enable) bit is set (i.e. actually value zero which means enabled in the land of AVR
-// fuse bytes).  It must be cleared (i.e. set to 1!) otherwise PF4 and PF5 cannot be used as GPIO.  Out of the box the AtMega32U4
-// low fuse (lfuse) byte was set to 0x99.  Writing  this to 0xD9 disabled JTAG. 
-
-
-//#define KEYS_PORT	PORTD	// Hardware Port definition for setting pull-ups.
-//#define KEYS_PINS	PIND	// Hardware Pins definition for reading keys.
-//#define KEYS_DDR	DDRD	// Hardware data direction register.
-#define MAX_KEYS	6	// Max number of simultaneous key-presses (excluding media keys and modifiers).
+// Max number of simultaneous key-presses (excluding media keys and modifiers).
+#define MAX_KEYS	6
 
 // Bit-shift definitions for the uint16_t media_keys integer:
 #define MK_PLAY		 0

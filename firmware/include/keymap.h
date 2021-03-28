@@ -1,20 +1,44 @@
 #include <avr/pgmspace.h>	// Required for writing to and reading from program memory space.
 
-#define NUM_ROWS 6
-#define NUM_COLS 4
+// Define microcontroller registers for configuring inputs and outputs as required for keypad scanning.
+#define ROWS_PORT	PORTD
+#define ROWS_DDR	DDRD
+#define ROWS_PINS	PIND
+#define COLS_PORT	PORTF
+#define COLS_DDR	DDRF
+#define COLS_PINS	PINF
 
-//#define MAX_PHYSICAL_KEYS 	4	// Maximum number of physical keys to scan.
-//#define MAX_MACRO_CHARS 	255	// Maximum number of sequential characters in a macro.
+// Define which physical microcontroller pins are conncted to the keypad rows and columns.
+#define ROW0	PD0
+#define ROW1	PD1
+#define ROW2	PD2
+#define ROW3	PD3
+#define ROW4	PD4
+#define ROW5	PD5
+#define COL0	PF0
+#define COL1	PF1
+#define COL2	PF4
+#define COL3	PF5
+// !IMPORTANT! - By default, the JTAGEN (JTAG enable) bit is set (i.e. actually value zero which means enabled in the land of AVR
+// fuse bytes).  It must be cleared (i.e. set to 1!) otherwise PF4 and PF5 cannot be used as GPIO.  Out of the box the AtMega32U4
+// low fuse (lfuse) byte was set to 0x99.  Writing  this to 0xD9 disabled JTAG. 
 
+// Total number of rows and columns that should be identified as regular keystrokes or macros.
+#define NUM_KEY_ROWS 5
+#define NUM_KEY_COLS 4
+#define NUM_MACRO_ROWS 1
+#define NUM_MACRO_COLS 4
 
-extern const char KEYMAP[6][4];
+// If the number of characters in a macro string defined in keymap.c exceeds this value, the macro will be truncated.
+#define MAX_MACRO_CHARS 256
+
 // Declare the key-to-pin, macro-to-pin, keymap and macromap arrays.
-//const uint8_t KEY_PIN_ARRAY[MAX_PHYSICAL_KEYS];			// Array defines which pins should be keystrokes.
-//const uint8_t MACRO_PIN_ARRAY[MAX_PHYSICAL_KEYS];		// Array defines which pins should be macros.
-//const uint8_t MACRO_PIN_ARRAY[24];		// Array defines which pins should be macros.
-//const char KEY_MAP[MAX_PHYSICAL_KEYS];				// Array maps key (pin) to a keyscan code.
-//const char MACRO_MAP[MAX_PHYSICAL_KEYS][MAX_MACRO_CHARS];	// Array maps key (pin) to a macro.
-
+extern const uint8_t key_row_array[NUM_KEY_ROWS];
+extern const uint8_t key_col_array[NUM_KEY_COLS];
+extern const uint8_t macro_row_array[NUM_MACRO_ROWS];
+extern const uint8_t macro_col_array[NUM_MACRO_COLS];
+extern const char KEYMAP[NUM_KEY_ROWS][NUM_KEY_COLS];
+extern const char MACROMAP[NUM_MACRO_ROWS][NUM_MACRO_COLS][MAX_MACRO_CHARS];
 
 // Key scan-codes:
 // Note these are defined in the lufa library file LUFA/Drivers/USB/Class/Common/HIDClassCommon.h but repeated again

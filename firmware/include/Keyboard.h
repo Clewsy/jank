@@ -111,7 +111,8 @@
 	void SendNextKeyboardReport(void);
 	void ReceiveNextKeyboardReport(void);
 	void SendNextMediaControllerReport(void);
-	void SendMacroReports(const char *macro_string);
+//	void SendMacroReports(const char *macro_string);
+void SendMacroReports(void);
 	void type_key(char key);
 	void SendNextMacroKeyReport(uint8_t key_code, bool upper_case);
 

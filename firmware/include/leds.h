@@ -47,7 +47,7 @@
 
 // Mode definitions.
 #define NUM_MODES	(sizeof(modes) / sizeof modes[0])	// Macro for returning the total number of modes.
-#define START_MODE	1					// The led mode at start-up.
+#define START_MODE	4					// The led mode at start-up.
 
 // Declarations:
 struct mode

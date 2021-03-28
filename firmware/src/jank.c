@@ -30,8 +30,8 @@ void hardware_init(void)
 {
 	clock_prescale_set(clock_div_1);
 	leds_init();		// Defined in leds.c
-//	keyscan_init();		// Defined in keyscan.c
-//	SetupHIDHardware();	// Defined in Keyboard.c
+	keyscan_init();		// Defined in keyscan.c
+	SetupHIDHardware();	// Defined in Keyboard.c
 }
 
 // Main program entry point.
@@ -40,11 +40,13 @@ void hardware_init(void)
 	hardware_init();
 	GlobalInterruptEnable();
 
+//type_key('g');
+
 	while(true)
 	{
-		_delay_ms(10);
+//		_delay_ms(10);
 
-//		HID_Task();	// In Keyboard.c
-//		USB_USBTask();	// In the lufa library.
+		HID_Task();	// In Keyboard.c
+		USB_USBTask();	// In the lufa library.
 	}
 }

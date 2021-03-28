@@ -1,6 +1,36 @@
 #include "keymap.h"
 
 
+
+#define NUM_ROWS 6
+#define NUM_COLS 4
+
+
+// The key map array.
+const char KEYMAP[NUM_ROWS][NUM_COLS] PROGMEM = {
+	// Column 0                     	  	Column 1					Column 2					Column 3
+	{HID_KEYBOARD_SC_A,				HID_KEYBOARD_SC_B,				HID_KEYBOARD_SC_C,				HID_KEYBOARD_SC_D},		// Row 0
+	{HID_KEYBOARD_SC_NUM_LOCK,			HID_KEYBOARD_SC_KEYPAD_SLASH,			HID_KEYBOARD_SC_KEYPAD_ASTERISK,		HID_KEYBOARD_SC_KEYPAD_MINUS},	// Row 1
+	{HID_KEYBOARD_SC_KEYPAD_7_AND_HOME,		HID_KEYBOARD_SC_KEYPAD_8_AND_UP_ARROW,		HID_KEYBOARD_SC_KEYPAD_9_AND_PAGE_UP,		HID_KEYBOARD_SC_KEYPAD_PLUS},	// Row 2
+	{HID_KEYBOARD_SC_KEYPAD_4_AND_LEFT_ARROW,	HID_KEYBOARD_SC_KEYPAD_5,			HID_KEYBOARD_SC_KEYPAD_6_AND_RIGHT_ARROW,	0x00},				// Row 3
+	{HID_KEYBOARD_SC_KEYPAD_1_AND_END,		HID_KEYBOARD_SC_KEYPAD_2_AND_DOWN_ARROW,	HID_KEYBOARD_SC_KEYPAD_3_AND_PAGE_DOWN,		HID_KEYBOARD_SC_KEYPAD_ENTER},	// Row 4
+	{HID_KEYBOARD_SC_KEYPAD_0_AND_INSERT,		0x00,						HID_KEYBOARD_SC_KEYPAD_DOT_AND_DELETE,		0x00}				// Row 5
+};
+
+
+
+
+
+
+
+
+/*
+
+
+
+
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Example configuration: All four keys are media controls, toggle, stop, previous & next.
 const uint8_t KEY_PIN_ARRAY[] = {KEY_1, KEY_2, KEY_3, KEY_4};

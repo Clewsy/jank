@@ -3,9 +3,22 @@
 // Initialise the gpio for scanning rows and columns.
 void keyscan_init(void)
 {
-	// Set keys as inputs and enable pull-ups.
-	KEYS_DDR &= ~((1 << KEY_1) | (1 << KEY_2) | (1 << KEY_3) | (1 << KEY_4));
-	KEYS_PORT |= ((1 << KEY_1) | (1 << KEY_2) | (1 << KEY_3) | (1 << KEY_4));
+//	// Set keys as inputs and enable pull-ups.
+//	KEYS_DDR &= ~((1 << KEY_1) | (1 << KEY_2) | (1 << KEY_3) | (1 << KEY_4));
+//	KEYS_PORT |= ((1 << KEY_1) | (1 << KEY_2) | (1 << KEY_3) | (1 << KEY_4));
+
+
+
+// Set rows as outputs and initialise all as high (disabled).
+ROWS_DDR |= ((1 << ROW0) | (1 << ROW1) | (1 << ROW2) | (1 << ROW3) | (1 << ROW4) | (1 << ROW5));
+ROWS_PORT |= ((1 << ROW0) | (1 << ROW1) | (1 << ROW2) | (1 << ROW3) | (1 << ROW4) | (1 << ROW5));
+
+// Set columns as inputs and enable pull-ups.
+COLS_DDR &= ~((1 << COL0) | (1 << COL1) | (1 << COL2) | (1 << COL3));
+COLS_PORT |= ((1 << COL0) | (1 << COL1) | (1 << COL2) | (1 << COL3));
+
+
+
 }
 
 // Parse the detected key and update the appropriate part of the report struct.
@@ -43,11 +56,54 @@ void handle_key(char key, keyscan_report_t *keyscan_report)
 	}
 }
 
+
+
+#include <util/delay.h>
 void create_keyscan_report(keyscan_report_t *keyscan_report)
 {
 	// Start with a blank keyscan report.
 	memset(keyscan_report, 0, sizeof(keyscan_report_t));
 
+
+static uint8_t row_array[6] = {ROW0, ROW1, ROW2, ROW3, ROW4, ROW5};
+static uint8_t col_array[4] = {COL0, COL1, COL2, COL3};
+
+
+	// Loop through for each row.
+	for(uint8_t r = 0; r < sizeof(row_array); r++)
+//for(uint8_t r = 0; r < 1; r++)
+	{
+		// Set low current row (enable check).
+		ROWS_PORT &= ~(1 << row_array[r]);
+
+		// Wait until row is set low before continuing, otherwise column checks can be missed.
+		while(!(~ROWS_PINS & (1 << row_array[r]))) {}
+
+		// Loop through for each column in the current row.
+		for(uint8_t c = 0; c < sizeof(col_array); c++)
+		{
+			// If the button in the current row and column is pressed, handle it.
+			if(~COLS_PINS & (1 << col_array[c]))
+			{
+				handle_key(pgm_read_byte(&KEYMAP[r][c]), keyscan_report);
+			}
+		}
+
+		// Set high current row (disable check).
+		ROWS_PORT |= (1 << row_array[r]);
+	}
+
+
+
+
+
+
+
+
+
+
+
+/*
 	// Loop through for each key.
 	for(uint8_t k = 0; k < sizeof(KEY_PIN_ARRAY); k++)
 	{
@@ -57,6 +113,7 @@ void create_keyscan_report(keyscan_report_t *keyscan_report)
 			handle_key(pgm_read_byte(&KEY_MAP[k]), keyscan_report);
 		}
 	}
+*/
 }
 
 // Returns the address of a macro, i.e. first character in a string to be "typed".
@@ -67,11 +124,11 @@ const char *scan_macro_keys(void)
 	static const char NO_MACRO[] PROGMEM = "";	// Needed when no macro key is pressed.
 
 	// Loop through for each macro key.
-	for(uint8_t m = 0; m < sizeof(MACRO_PIN_ARRAY); m++)
-	{
+//	for(uint8_t m = 0; m < sizeof(MACRO_PIN_ARRAY); m++)
+//	{
 		// If the macro key m is pressed, return the address of the macro string mapped in "keymap.c".
-		if(~KEYS_PINS & (1 << MACRO_PIN_ARRAY[m])) return(&MACRO_MAP[m][0]);
-	}
+//		if(~KEYS_PINS & (1 << MACRO_PIN_ARRAY[m])) return(&MACRO_MAP[m][0]);
+//	}
 	return(&NO_MACRO[0]);	// Return the address of a blank array when no macro key is pressed.
 }
 

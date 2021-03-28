@@ -395,7 +395,7 @@ void ReceiveNextKeyboardReport(void)
 	}
 }
 
-// clewsy: Send the multiple sequential reports that make up a define macro.
+// Send the multiple sequential reports that make up a define macro.
 void SendMacroReports(const char *macro_string)
 {
 	static const char *last_macro_string = "";	// Remember the last run macro.
@@ -447,10 +447,10 @@ void HID_Task(void)
 	// Device must be connected and configured for the task to run.
 	if (USB_DeviceState != DEVICE_STATE_Configured) return;
 
-	// clewsy: Check for and action any key presses designated as macros.
+	// Check for and action any key presses designated as macros.
 //	SendMacroReports(scan_macro_keys());
 
-	// clewsy: Update the keyscan report - will be used for creating both the keyboard and media controller reports.
+	// Update the keyscan report - will be used for creating both the keyboard and media controller reports.
 	create_keyscan_report(&keyscan_report);
 
 	// Send the next keypress report to the host.
@@ -459,6 +459,6 @@ void HID_Task(void)
 	// Process the LED report sent from the host.
 	ReceiveNextKeyboardReport();
 
-	// clewsy: Send the next media controller keypress report to the host.
+	// Send the next media controller keypress report to the host.
 	SendNextMediaControllerReport();
 }

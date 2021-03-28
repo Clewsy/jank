@@ -56,7 +56,7 @@
 	#include "keyscan.h"
 
 	// Needed to prevent double key-presses.  Small number of keys means key-scanning happens a bit too quickly.
-	#define DEBOUNCE_MS	1
+	#define DEBOUNCE_MS	2
 
 	// Definitions needed for controlling the LED to indicate numlock status.
 	#define NUMLOCK_LED_PORT	PORTB

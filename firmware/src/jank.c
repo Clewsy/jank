@@ -1,7 +1,7 @@
 #include "jank.h"
 
 // This interrupt sub-routine is triggered by a counter configured to vary the PWM signal used to control the brightness of the
-//LEDs.  When enabled this creates a pulsing effect with the LEDs.
+// LEDs.  When enabled this creates a pulsing effect with the LEDs.
 ISR(PULSER_INT_VECTOR)
 {
 	leds_handle_pulser_interrupt();
@@ -18,7 +18,8 @@ ISR(BUTTON_PCI_VECTOR)
 	// If the button is still pressed (i.e. not a bounce or a release), change the mode.
 	if(leds_button_state()) leds_change_mode();
 
-	while(leds_button_state())	// Keep the usb interface alive whilst waiting until the button is released.
+	// Keep the usb interface alive whilst waiting until the button is released.
+	while(leds_button_state())
 	{
 		HID_Task();
 		USB_USBTask();
@@ -28,10 +29,10 @@ ISR(BUTTON_PCI_VECTOR)
 // Initialise the hardware peripherals.
 void hardware_init(void)
 {
-	clock_prescale_set(clock_div_1);
-	leds_init();		// Defined in leds.c
-	keyscan_init();		// Defined in keyscan.c
-	SetupHIDHardware();	// Defined in Keyboard.c
+	clock_prescale_set(clock_div_1);	// Ensure no pre-scaling (run full speed - 16MHz).
+	leds_init();				// Defined in leds.c
+	keyscan_init();				// Defined in keyscan.c
+	SetupHIDHardware();			// Defined in Keyboard.c
 }
 
 // Main program entry point.
@@ -40,12 +41,8 @@ void hardware_init(void)
 	hardware_init();
 	GlobalInterruptEnable();
 
-//type_key('g');
-
 	while(true)
 	{
-//		_delay_ms(10);
-
 		HID_Task();	// In Keyboard.c
 		USB_USBTask();	// In the lufa library.
 	}

@@ -3,22 +3,13 @@
 // Initialise the gpio for scanning rows and columns.
 void keyscan_init(void)
 {
-//	// Set keys as inputs and enable pull-ups.
-//	KEYS_DDR &= ~((1 << KEY_1) | (1 << KEY_2) | (1 << KEY_3) | (1 << KEY_4));
-//	KEYS_PORT |= ((1 << KEY_1) | (1 << KEY_2) | (1 << KEY_3) | (1 << KEY_4));
+	// Set rows as outputs and initialise all as high (disabled).
+	ROWS_DDR |= ((1 << ROW0) | (1 << ROW1) | (1 << ROW2) | (1 << ROW3) | (1 << ROW4) | (1 << ROW5));
+	ROWS_PORT |= ((1 << ROW0) | (1 << ROW1) | (1 << ROW2) | (1 << ROW3) | (1 << ROW4) | (1 << ROW5));
 
-
-
-// Set rows as outputs and initialise all as high (disabled).
-ROWS_DDR |= ((1 << ROW0) | (1 << ROW1) | (1 << ROW2) | (1 << ROW3) | (1 << ROW4) | (1 << ROW5));
-ROWS_PORT |= ((1 << ROW0) | (1 << ROW1) | (1 << ROW2) | (1 << ROW3) | (1 << ROW4) | (1 << ROW5));
-
-// Set columns as inputs and enable pull-ups.
-COLS_DDR &= ~((1 << COL0) | (1 << COL1) | (1 << COL2) | (1 << COL3));
-COLS_PORT |= ((1 << COL0) | (1 << COL1) | (1 << COL2) | (1 << COL3));
-
-
-
+	// Set columns as inputs and enable pull-ups.
+	COLS_DDR &= ~((1 << COL0) | (1 << COL1) | (1 << COL2) | (1 << COL3));
+	COLS_PORT |= ((1 << COL0) | (1 << COL1) | (1 << COL2) | (1 << COL3));
 }
 
 // Parse the detected key and update the appropriate part of the report struct.
@@ -65,13 +56,12 @@ void create_keyscan_report(keyscan_report_t *keyscan_report)
 	memset(keyscan_report, 0, sizeof(keyscan_report_t));
 
 
-static uint8_t row_array[6] = {ROW0, ROW1, ROW2, ROW3, ROW4, ROW5};
-static uint8_t col_array[4] = {COL0, COL1, COL2, COL3};
+	static const uint8_t row_array[6] = {ROW0, ROW1, ROW2, ROW3, ROW4, ROW5};
+	static const uint8_t col_array[4] = {COL0, COL1, COL2, COL3};
 
 
 	// Loop through for each row.
 	for(uint8_t r = 0; r < sizeof(row_array); r++)
-//for(uint8_t r = 0; r < 1; r++)
 	{
 		// Set low current row (enable check).
 		ROWS_PORT &= ~(1 << row_array[r]);

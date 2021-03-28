@@ -30,7 +30,6 @@
 // low fuse (lfuse) byte was set to 0x99.  Writing  this to 0xD9 disabled JTAG. 
 
 
-
 //#define KEYS_PORT	PORTD	// Hardware Port definition for setting pull-ups.
 //#define KEYS_PINS	PIND	// Hardware Pins definition for reading keys.
 //#define KEYS_DDR	DDRD	// Hardware data direction register.

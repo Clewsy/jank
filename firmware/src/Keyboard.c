@@ -1,10 +1,9 @@
-// This version of Keyboard.c has been modified from the original demo in Dean Camera's LUFA repository.
+// This version of Keyboard.c has been heavily modified from the original demo in Dean Camera's LUFA repository.
 // Effectively I have used combinations of my own functions in addition to functions from the following .c files:
 // - Keyboard.c at https://github.com/abcminiuser/lufa/tree/790ac4d125c1c5d72016b52c2b9ad58f5e5f8c62/Demos/Device/LowLevel/Keyboard
 // - KeyboardMouse.c at https://github.com/abcminiuser/lufa/tree/790ac4d125c1c5d72016b52c2b9ad58f5e5f8c62/Demos/Device/LowLevel/KeyboardMouse
 // - MediaController.c at https://github.com/abcminiuser/lufa/tree/790ac4d125c1c5d72016b52c2b9ad58f5e5f8c62/Projects/MediaController
-//
-// Significant changes and additions noted in comments prepended with "clewsy".
+// These changes are similarly MIT licensed (refer license at https://gitlab.com/clewsy/jank).
 
 /*
              LUFA Library
@@ -39,61 +38,45 @@
 
 #include "Keyboard.h"
 
-// Indicates what report mode the host has requested, true for normal HID reporting mode, false for special boot
-// protocol reporting mode.
+// Indicates what report mode the host has requested, true for normal HID reporting mode, false for special boot protocol reporting
+// mode.
 static bool UsingReportProtocol = true;
 
-// Current Idle period. This is set by the host via a Set Idle HID class request to silence the device's reports for 
-// either the entire idle duration, or until the report status changes (e.g. the user presses a key).
+// Current Idle period. This is set by the host via a Set Idle HID class request to silence the device's reports for either the
+// entire idle duration, or until the report status changes (e.g. the user presses a key).
 static uint16_t IdleCount = 500;
 
-// Current Idle period remaining. When the IdleCount value is set, tracks the remaining number of idle milliseconds.
-// This is separate to the IdleCount timer and is incremented and compared as the host may request the current idle
-// period via a Get Idle HID class request, thus its value must be preserved.
+// Current Idle period remaining. When the IdleCount value is set, tracks the remaining number of idle milliseconds. This is
+// separate to the IdleCount timer and is incremented and compared as the host may request the current idle period via a Get Idle
+// HID class request, thus its value must be preserved.
 static uint16_t IdleMSRemaining = 0;
 
-// clewsy: Declaration of a keyscan_report_t structure that will be used to pass current keypresses to the keyboard
-// reports and the media controller reports. 
+// Declaration of a keyscan_report_t structure that will be used to pass current keypresses to the keyboard reports and the media
+// controller reports. 
 static keyscan_report_t keyscan_report;
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// clewsy: main function taken out of Keyboard.c and is instead in jank.c
-//int main(void)
-//{
-//	SetupHardware();
-//
-//	GlobalInterruptEnable();
-//
-//	for (;;)
-//	{
-//		HID_Task();
-//		USB_USBTask();
-//	}
-//}
-
 // Configures the board hardware and chip peripherals.
-// clewsy: Use case is specifically an ATmega32U4 (ARCH_AVR8) so requirements for other architectures can be removed.
+// Use case is specifically an ATmega32U4 (ARCH_AVR8).
 void SetupHIDHardware(void)
 {
 	// Disable watchdog if enabled by bootloader/fuses.
 	MCUSR &= ~(1 << WDRF);
 	wdt_disable();
 
-	// Disable clock division.
-	clock_prescale_set(clock_div_1);
+	// Set numlock LED pin as an output.
+	NUMLOCK_LED_DDR |= (1 << NUMLOCK_LED);
 
-	// Hardware Initialization
-//	LEDs_Init();
+	// USB Initialization from LUFA library.
 	USB_Init();
-//	Buttons_Init();
 }
 
-// Event handler for the USB_Connect event. This indicates that the device is enumerating via the status LEDs and starts
-// the library USB task to begin the enumeration and USB management process.
+// Event handler for the USB_Connect event. This indicates that the device is enumerating via the status LEDs and starts the library
+// USB task to begin the enumeration and USB management process.
 void EVENT_USB_Device_Connect(void)
 {
-	// Indicate USB enumerating.
-//	LEDs_SetAllLEDs(LEDMASK_USB_ENUMERATING);
+	// Indicate USB enumerating with NUMLOCK LED.
+	numlock_led(true);
+
 	// Default to report protocol on connect.
 	UsingReportProtocol = true;
 }
@@ -102,11 +85,11 @@ void EVENT_USB_Device_Connect(void)
 void EVENT_USB_Device_Disconnect(void)
 {
 	// Indicate USB not ready.
-//	LEDs_SetAllLEDs(LEDMASK_USB_NOTREADY);
+	numlock_led(false);
 }
 
-// Event handler for the USB_ConfigurationChanged event. This is fired when the host sets the current configuration of
-// the USB device after enumeration, and configures the keyboard device endpoints.
+// Event handler for the USB_ConfigurationChanged event. This is fired when the host sets the current configuration of the USB
+// device after enumeration, and configures the keyboard device endpoints.
 void EVENT_USB_Device_ConfigurationChanged(void)
 {
 	bool ConfigSuccess = true;
@@ -118,9 +101,6 @@ void EVENT_USB_Device_ConfigurationChanged(void)
 
 	// Turn on Start-of-Frame events for tracking HID report period expiry.
 	USB_Device_EnableSOFEvents();
-
-	// Indicate endpoint configuration success or failure.
-//	LEDs_SetAllLEDs(ConfigSuccess ? LEDMASK_USB_READY : LEDMASK_USB_ERROR);
 }
 
 // Event handler for the USB_ControlRequest event. This is used to catch and process control requests sent to the device
@@ -240,8 +220,7 @@ void EVENT_USB_Device_StartOfFrame(void)
 
 // Fills the given HID report data structure with the next keyboard HID input report to send to the host.
 // ReportData: Pointer to a HID report data structure to be filled.
-// clewsy: create HID report function significantly changed.  Report data derived from keyscan report created by the
-// create_keyscan_report() function in keyscan.c.
+// Report data derived from keyscan report created by the create_keyscan_report() function in keyscan.c.
 void CreateKeyboardReport(USB_KeyboardReport_Data_t* const ReportData)
 {
 	// Clear the report contents.
@@ -256,7 +235,6 @@ void CreateKeyboardReport(USB_KeyboardReport_Data_t* const ReportData)
 
 // Fills the given HID report data structure with the next media controller HID input report to send to the host.
 // MediaReportData:  Pointer to a HID report data structure to be filled.
-// clewsy: created this function from scratch, same concept as keyboard version.
 void CreateMediaControllerReport(USB_MediaControllerReport_Data_t* const MediaReportData)
 {
 	// Clear the report contents.
@@ -276,35 +254,32 @@ void CreateMediaControllerReport(USB_MediaControllerReport_Data_t* const MediaRe
 	MediaReportData->VolumeDown	= (keyscan_report.media_keys & (1 << MK_VOL_DOWN)	? true : false);
 }
 
-// clewsy: Similar to CreateKeyboardReport() function but creates a report for a single specific keypress.
+// Similar to CreateKeyboardReport() function but creates a report for a single specific keypress.
 void CreateMacroKeyReport(USB_KeyboardReport_Data_t* const ReportData, char key_code, bool upper_case)
 {
 	// Clear the report contents.
 	memset(ReportData, 0, sizeof(USB_KeyboardReport_Data_t));
 
-	if(upper_case == true)	ReportData->Modifier = 0b00000010;	// Apply left shift key.
+	// Apply left shift key if desired character is upper-case.
+	if(upper_case == true)	ReportData->Modifier = 0b00000010;
 
+	// Apply the character key code.
 	ReportData->KeyCode[0] = key_code;
+}
+
+// Set or clear the smd LED on the bottom of the board used to indicate the status of Num Lock.
+void numlock_led(bool on)
+{
+	if (on)	NUMLOCK_LED_PORT |= (1 << NUMLOCK_LED);
+	else 	NUMLOCK_LED_PORT &= ~(1 << NUMLOCK_LED);
 }
 
 // Processes a received LED report, and updates the board LEDs states to match.
 // LEDReport: LED status report from the host.
-// clewsy: Commented for now, may remove completely depending on how I decide to control LEDs on the custom board.
 void ProcessLEDReport(const uint8_t LEDReport)
 {
-//	uint8_t LEDMask = LEDS_LED2;
-//
-//	if (LEDReport & HID_KEYBOARD_LED_NUMLOCK)
-//	  LEDMask |= LEDS_LED1;
-//
-//	if (LEDReport & HID_KEYBOARD_LED_CAPSLOCK)
-//	  LEDMask |= LEDS_LED3;
-//
-//	if (LEDReport & HID_KEYBOARD_LED_SCROLLLOCK)
-//	  LEDMask |= LEDS_LED4;
-//
-//	// Set the status LEDs to the current Keyboard LED status.
-//	LEDs_SetAllLEDs(LEDMask);
+	if (LEDReport & HID_KEYBOARD_LED_NUMLOCK)	numlock_led(true);
+	else 						numlock_led(false);
 }
 
 // Sends the next keyboard HID report to the host, via the keyboard data endpoint.
@@ -348,13 +323,13 @@ void SendNextKeyboardReport(void)
 		Endpoint_ClearIN();
 	}
 
-// If there were more keys (e.g. a full-size keyboard), this delay would likely not be required.
-_delay_ms(DEBOUNCE_MS);	//Dirty delay to prevent button bounce registering as a double-press.
+	// If there were more keys (e.g. a full-size keyboard), this delay may not be required.
+	_delay_ms(DEBOUNCE_MS);	// Dirty delay to prevent button bounce registering as a double-press.
 }
 
 
 // Sends the next media controller HID report to the host, via the keyboard data endpoint.
-// clewsy: This function is very similar to the keyboard equivalent but was created for media controller reports.
+// This function is very similar to the keyboard equivalent but was created for media controller reports.
 void SendNextMediaControllerReport(void)
 {
 	static USB_MediaControllerReport_Data_t	PrevMediaControllerReportData;
@@ -425,7 +400,7 @@ void SendMacroReports(const char *macro_string)
 {
 	static const char *last_macro_string = "";	// Remember the last run macro.
 
-	if(last_macro_string != macro_string)	// Only if the macro has changed - prevents re-run if key held.
+	if(last_macro_string != macro_string)		// Only if the macro has changed - prevents re-run if key held.
 	{
 		uint8_t i = 0;
 		while(pgm_read_byte(&macro_string[i]) != '\0')
@@ -437,15 +412,15 @@ void SendMacroReports(const char *macro_string)
 	}
 }
 
-// clewsy: effectivley send a keyboard report but for a single character. 
+// Effectivley send a keyboard report but for a single character. 
 void type_key(char key)
 {
 	SendNextMacroKeyReport(char_to_code(key), upper_case_check(key));
 	SendNextMacroKeyReport(0x00, false);	// Send a "no-key" after each actual char (i.e. release the key).
 }
 
-// clewsy: Similar to teh SendNextKeyboardReport() function, but types a single key (with or without modifiers).
-// Intended to be used sequentially to "type" a string of characters - i.e. a macro.
+// Similar to the SendNextKeyboardReport() function, but types a single key (with or without modifiers). Intended to be used
+// sequentially to "type" a string of characters - i.e. a macro.
 void SendNextMacroKeyReport(uint8_t key_code, bool upper_case)
 {
 	USB_KeyboardReport_Data_t        MacroReportData;

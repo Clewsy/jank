@@ -1,11 +1,6 @@
 #include "keymap.h"
 
 
-
-#define NUM_ROWS 6
-#define NUM_COLS 4
-
-
 // The key map array.
 const char KEYMAP[NUM_ROWS][NUM_COLS] PROGMEM = {
 	// Column 0                     	  	Column 1					Column 2					Column 3
@@ -19,18 +14,7 @@ const char KEYMAP[NUM_ROWS][NUM_COLS] PROGMEM = {
 
 
 
-
-
-
-
-
 /*
-
-
-
-
-
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Example configuration: All four keys are media controls, toggle, stop, previous & next.
 const uint8_t KEY_PIN_ARRAY[] = {KEY_1, KEY_2, KEY_3, KEY_4};
@@ -45,7 +29,7 @@ const char KEY_MAP[] PROGMEM = {
 
 const char MACRO_MAP[][MAX_MACRO_CHARS] PROGMEM = {};
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+*/
 
 /*
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

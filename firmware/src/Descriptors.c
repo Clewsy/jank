@@ -1,7 +1,7 @@
 // This version of Descriptors.c has been modified from the original demo in Dean Camera's LUFA repository.
 // I have kept the keyboard components and added in additional components for handling media controls.
+// These changes are similarly MIT licensed (refer license at https://gitlab.com/clewsy/jank).
 //
-// Significant changes and additions noted in comments prepended with "clewsy".
 /*
              LUFA Library
      Copyright (C) Dean Camera, 2020.
@@ -35,10 +35,10 @@
 
 #include "Descriptors.h"
 
-// HID class report descriptor. This is a special descriptor constructed with values from the USBIF HID class
-// specification to describe the reports and capabilities of the HID device. This descriptor is parsed by the host and
-// its contents used to determine what data (and in what encoding) the device will send, and what it may be sent back
-// from the host. Refer to the HID specification for more details on HID report descriptors.
+// HID class report descriptor. This is a special descriptor constructed with values from the USBIF HID class specification to
+// describe the reports and capabilities of the HID device. This descriptor is parsed by the host and its contents used to determine
+// what data (and in what encoding) the device will send, and what it may be sent back from the host. Refer to the HID specification
+// for more details on HID report descriptors.
 const USB_Descriptor_HIDReport_Datatype_t PROGMEM KeyboardReport[] =
 {
 	HID_RI_USAGE_PAGE(8, 0x01),		// Generic Desktop
@@ -102,9 +102,9 @@ const USB_Descriptor_HIDReport_Datatype_t PROGMEM MediaControllerReport[] =
 };
 
 
-// Device descriptor structure. This descriptor, located in FLASH memory, describes the overall device characteristics,
-// including the supported USB version, control endpoint size and the number of device configurations. The descriptor is
-// read out by the USB host when the enumeration process begins.
+// Device descriptor structure. This descriptor, located in FLASH memory, describes the overall device characteristics, including
+// the supported USB version, control endpoint size and the number of device configurations. The descriptor is read out by the USB
+// host when the enumeration process begins.
 const USB_Descriptor_Device_t PROGMEM DeviceDescriptor =
 {
 	.Header                 = {.Size = sizeof(USB_Descriptor_Device_t), .Type = DTYPE_Device},
@@ -127,11 +127,10 @@ const USB_Descriptor_Device_t PROGMEM DeviceDescriptor =
 	.NumberOfConfigurations = FIXED_NUM_CONFIGURATIONS
 };
 
-// Configuration descriptor structure. This descriptor, located in FLASH memory, describes the usage of the device in
-// one of its supported configurations, including information about any device interfaces and endpoints. The descriptor
-// is read out by the USB host during the enumeration process when selecting a configuration so that the host may
-// correctly communicate with the USB device.
-// clewsy: Here I added a second interface and the configuration structures related to the media controller interface.
+// Configuration descriptor structure. This descriptor, located in FLASH memory, describes the usage of the device in one of its
+// supported configurations, including information about any device interfaces and endpoints. The descriptor is read out by the USB
+// host during the enumeration process when selecting a configuration so that the host may correctly communicate with the USB
+// device.
 const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor =
 {
 	.Config =
@@ -234,24 +233,23 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor =
 		}
 };
 
-// Language descriptor structure. This descriptor, located in FLASH memory, is returned when the host requests the
-// string descriptor with index 0 (the first index). It is actually an array of 16-bit integers, which indicate via the
-// language ID table available at USB.org what languages the device supports for its string descriptors.
+// Language descriptor structure. This descriptor, located in FLASH memory, is returned when the host requests the string descriptor
+// with index 0 (the first index). It is actually an array of 16-bit integers, which indicate via the language ID table available at
+// USB.org what languages the device supports for its string descriptors.
 const USB_Descriptor_String_t PROGMEM LanguageString = USB_STRING_DESCRIPTOR_ARRAY(LANGUAGE_ID_ENG);
 
-// Manufacturer descriptor string. This is a Unicode string containing the manufacturer's details in human readable
-// form, and is read out upon request by the host when the appropriate string ID is requested, listed in the Device
-// Descriptor.
+// Manufacturer descriptor string. This is a Unicode string containing the manufacturer's details in human readable form, and is
+// read out upon request by the host when the appropriate string ID is requested, listed in the Device Descriptor.
 const USB_Descriptor_String_t PROGMEM ManufacturerString = USB_STRING_DESCRIPTOR(L"clews.pro");
 
-// Product descriptor string. This is a Unicode string containing the product's details in human readable form, and is
-// read out upon request by the host when the appropriate string ID is requested, listed in the Device Descriptor.
+// Product descriptor string. This is a Unicode string containing the product's details in human readable form, and is read out upon
+// request by the host when the appropriate string ID is requested, listed in the Device Descriptor.
 const USB_Descriptor_String_t PROGMEM ProductString = USB_STRING_DESCRIPTOR(L"jank");
 
-// This function is called by the library when in device mode, and must be overridden (see library "USB Descriptors"
-// documentation) by the application code so that the address and size of a requested descriptor can be given to the USB
-// library. When the device receives a Get Descriptor request on the control endpoint, this function is called so that
-// the descriptor details can be passed back and the appropriate descriptor sent back to the USB host.
+// This function is called by the library when in device mode, and must be overridden (see library "USB Descriptors" documentation)
+// by the application code so that the address and size of a requested descriptor can be given to the USB library. When the device
+// receives a Get Descriptor request on the control endpoint, this function is called so that the descriptor details can be passed
+// back and the appropriate descriptor sent back to the USB host.
 uint16_t CALLBACK_USB_GetDescriptor(const uint16_t wValue,
                                     const uint16_t wIndex,
                                     const void** const DescriptorAddress)
@@ -322,4 +320,3 @@ uint16_t CALLBACK_USB_GetDescriptor(const uint16_t wValue,
 	*DescriptorAddress = Address;
 	return Size;
 }
-

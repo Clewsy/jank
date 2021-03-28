@@ -1,5 +1,5 @@
 // This version of Keyboard.h has been modified from the original demo in Dean Camera's LUFA repository.
-// Significant changes and additions noted in comments prepended with "clewsy".
+// These changes are similarly MIT licensed (refer license at https://gitlab.com/clewsy/jank).
 
 /*
              LUFA Library
@@ -52,16 +52,21 @@
 	#include <LUFA/Drivers/Board/LEDs.h>
 	#include <LUFA/Platform/Platform.h>
 
-	// clewsy: keyscan.h and .c files written for specific use-case, custom board.
+	// keyscan.h and .c files written for specific use-case, custom board.
 	#include "keyscan.h"
 
 	// Needed to prevent double key-presses.  Small number of keys means key-scanning happens a bit too quickly.
-	#define DEBOUNCE_MS	2
+	#define DEBOUNCE_MS	1
+
+	// Definitions needed for controlling the LED to indicate numlock status.
+	#define NUMLOCK_LED_PORT	PORTB
+	#define NUMLOCK_LED_DDR		DDRB
+	#define NUMLOCK_LED		PB6
+
 
 	// Type Defines:
-	// clewsy: Type define for a Media Control HID report. This report contains the bits to match the usages defined
-	// in the HID report of the device.  When set to a true, the relevant media controls on the host will be
-	// triggered.
+	// Type define for a Media Control HID report. This report contains the bits to match the usages defined in the HID report
+	// of the device.  When set to a true, the relevant media controls on the host will be triggered.
 	typedef struct
 	{
 		unsigned Play           : 1;
@@ -79,7 +84,7 @@
 	} ATTR_PACKED USB_MediaControllerReport_Data_t;
 
 	// The following struct for keyboard reports is defined in the lufa library HIDClassCommon.h file.  It's
-	// included here for easy reference.
+	// included here for convenient reference.
 //	typedef struct
 //	{
 //		uint8_t Modifier; /**< Keyboard modifier byte, indicating pressed modifier keys (a combination of
@@ -101,6 +106,7 @@
 	void CreateKeyboardReport(USB_KeyboardReport_Data_t* const ReportData);
 	void CreateMediaControllerReport(USB_MediaControllerReport_Data_t* const MediaReportData);
 	void CreateMacroKeyReport(USB_KeyboardReport_Data_t* const ReportData, char key_code, bool upper_case);
+	void numlock_led(bool on);
 	void ProcessLEDReport(const uint8_t LEDReport);
 	void SendNextKeyboardReport(void);
 	void ReceiveNextKeyboardReport(void);
@@ -110,4 +116,3 @@
 	void SendNextMacroKeyReport(uint8_t key_code, bool upper_case);
 
 #endif
-

@@ -20,19 +20,20 @@ Although any key can be configured to function as any keystroke or macro, I use 
 
 To do:
 
-- [ ] Hardware
-    - [X] Parts selection.
-    - [X] Schematic design.
-    - [X] PCB layout design.
-    - [X] Parts order.
-    - [X] PCB assembly.
-    - [ ] Enclosure.
-- [ ] Firmware
-    - [X] LED control.
-    - [X] Regular keystrokes.
-    - [X] Num lock LED.
-    - [X] Simple macros.
-    - [ ] Complex macros.
+Hardware
+- [X] Parts selection.
+- [X] Schematic design.
+- [X] PCB layout design.
+- [X] Parts order.
+- [X] PCB assembly.
+- [ ] Enclosure.
+
+Firmware
+- [X] LED control.
+- [X] Regular keystrokes.
+- [X] Num lock LED.
+- [X] Simple macros.
+- [ ] Complex macros.
 
 *********************************
 

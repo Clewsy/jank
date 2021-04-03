@@ -32,7 +32,7 @@ typedef struct
 void keyscan_init(void);
 void handle_key(char key, keyscan_report_t *keyscan_report);
 void create_keyscan_report(keyscan_report_t *keyscan_report);
-const char *scan_macro_keys(void);
+const macro_t *scan_macro_keys(void);
 uint8_t char_to_code(char key);
 bool upper_case_check(char key);
 

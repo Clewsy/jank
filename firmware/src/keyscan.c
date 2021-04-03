@@ -79,7 +79,7 @@ void create_keyscan_report(keyscan_report_t *keyscan_report)
 
 // Returns the address of a macro, i.e. first character in a string to be "typed".
 // Note: only the first detected macro will be registered.  I.e. simultaneous macro key-presses is not possible.
-const char *scan_macro_keys(void)
+const macro_t *scan_macro_keys(void)
 {
 
 //	static const char NO_MACRO[] PROGMEM = "";	// Needed when no macro key is pressed.

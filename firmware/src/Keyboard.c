@@ -395,20 +395,61 @@ void ReceiveNextKeyboardReport(void)
 }
 void SendMacroReports()
 {
-	const char *macro = scan_macro_keys();
+	const macro_t *macro = scan_macro_keys();
+
+	uint8_t m_count = 0;
 
 	if (macro)
 	{
-		// Loop for each character until null character reached, or max chars exceeded.
-		uint8_t i = 0;
-		while((pgm_read_byte(&macro[i])) && (i < MAX_MACRO_CHARS))
+		while(pgm_read_byte(&macro->m_action + (m_count * sizeof(macro_t))))
 		{
-			type_key(pgm_read_byte(&macro[i++]));
-			USB_USBTask();	// In the lufa library.
-		}
 
-		// Wait until the macro key is released (prevents repeats).
+			if(pgm_read_byte(&macro->m_action + (m_count * sizeof(macro_t))) == M_STRING)
+			{
+				uint8_t i = 0;
+				while((pgm_read_byte(&macro->m_string[i] + (m_count * sizeof(macro_t)))) && (i < MAX_MACRO_CHARS))
+				{
+					type_key(pgm_read_byte(&macro->m_string[i++] + (m_count * sizeof(macro_t))));
+					USB_USBTask();	// In the lufa library.
+				}
+
+
+			}
+
+			else if(pgm_read_byte(&macro->m_action + (m_count * sizeof(macro_t))) == M_KEYS)
+			{
+				type_key('K');
+			}
+
+			m_count++;
+
+
+		}
+//		if(pgm_read_byte((&macro->m_action)+sizeof(macro_t)) == M_STRING) type_key('X');
+//		if(pgm_read_byte((&macro->m_action)+sizeof(macro_t)+sizeof(macro_t)) == M_STRING) type_key('Y');
+
+
+
+
+		
+
+
+
 		while(scan_macro_keys()) USB_USBTask();
+
+
+
+
+//		// Loop for each character until null character reached, or max chars exceeded.
+//		uint8_t i = 0;
+//		while((pgm_read_byte(&macro[i])) && (i < MAX_MACRO_CHARS))
+//		{
+//			type_key(pgm_read_byte(&macro[i++]));
+//			USB_USBTask();	// In the lufa library.
+//		}
+//
+//		// Wait until the macro key is released (prevents repeats).
+//		while(scan_macro_keys()) USB_USBTask();
 	}
 }
 

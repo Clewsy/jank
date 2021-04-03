@@ -30,7 +30,16 @@
 #define NUM_MACRO_COLS 4
 
 // If the number of characters in a macro string defined in keymap.c exceeds this value, the macro will be truncated.
-#define MAX_MACRO_CHARS 256
+#define MAX_MACRO_CHARS 50
+#define MAX_MACRO_ACTIONS 50
+
+#define M_STRING	0x23
+#define M_KEYS		0x32
+
+typedef struct {
+        uint8_t m_action;
+        char m_string[MAX_MACRO_CHARS];
+} macro_t;
 
 // Declare the key-to-pin, macro-to-pin, keymap and macromap arrays.
 extern const uint8_t key_row_array[NUM_KEY_ROWS];
@@ -38,7 +47,7 @@ extern const uint8_t key_col_array[NUM_KEY_COLS];
 extern const uint8_t macro_row_array[NUM_MACRO_ROWS];
 extern const uint8_t macro_col_array[NUM_MACRO_COLS];
 extern const char KEYMAP[NUM_KEY_ROWS][NUM_KEY_COLS];
-extern const char MACROMAP[NUM_MACRO_ROWS][NUM_MACRO_COLS][MAX_MACRO_CHARS];
+extern const macro_t MACROMAP[NUM_MACRO_ROWS][NUM_MACRO_COLS][MAX_MACRO_ACTIONS];
 
 // Key scan-codes:
 // Note these are defined in the lufa library file LUFA/Drivers/USB/Class/Common/HIDClassCommon.h but repeated again

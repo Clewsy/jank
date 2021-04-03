@@ -24,10 +24,45 @@ const char KEYMAP[NUM_KEY_ROWS][NUM_KEY_COLS] PROGMEM = {
 #define MACRO_2 "jumped over the lazy dog.\n"
 #define MACRO_3 "`1234567890-=~!@#$%^&*()_+qwertyuiop[]\\QWERTYUIOP{}|asdfghjkl;'ASDFGHJKL:\"zxcvbnm,./ZXCVBNM<>?\n"
 
+
 // The macro map array - for key strokes that are mapped as macros.
-const char MACROMAP[NUM_MACRO_ROWS][NUM_MACRO_COLS][MAX_MACRO_CHARS] PROGMEM = {
-	// Column 0	Column 1	Column 2	Column 3
-	{MACRO_0,	MACRO_1,	MACRO_2,	MACRO_3}	// Row 0
+const macro_t MACROMAP[NUM_MACRO_ROWS][NUM_MACRO_COLS][MAX_MACRO_ACTIONS] PROGMEM = 
+{ //Rows
+	{ //Cols
+		{
+			{M_STRING, "qwer"},
+			{M_STRING, "tyui"}
+		},
+		{
+			{M_STRING, "asdf"},
+			{M_STRING, "ghjk"},
+			{M_STRING, "l;'"}
+		},
+		{
+			{M_STRING, "zxcv"},
+			{M_KEYS, "whatever"}
+		},
+		{
+			{M_STRING, "      _\n"},
+			{M_STRING, "     ( )\n"},
+			{M_STRING, "      H\n"},
+			{M_STRING, "      H\n"},
+			{M_STRING, "     _H_\n"},
+			{M_STRING, "  .-'-.-'-.\n"},
+			{M_STRING, " /         \\\n"},
+			{M_STRING, "|           |\n"},
+			{M_STRING, "|   .-------'._\n"},
+			{M_STRING, "|  / /  '.' '. \\\n"},
+			{M_STRING, "|  \\ \\ @   @ / /\n"},
+			{M_STRING, "|   '---------'\n"},
+			{M_STRING, "|    _______|\n"},
+			{M_STRING, "|  .'-+-+-+|\n"},
+			{M_STRING, "|  '.-+-+-+|\n"},
+			{M_STRING, "|    '''''' |\n"},
+			{M_STRING, "'-.__   __.-'\n"},
+			{M_STRING, "     '''\n"}
+		}
+	}
 };
 
 /*

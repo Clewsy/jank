@@ -48,10 +48,10 @@ const macro_t MACROMAP[NUM_MACRO_ROWS][NUM_MACRO_COLS][MAX_MACRO_ACTIONS] PROGME
 		},
 		{ //Col1
 			{M_KEYS, {HID_KEYBOARD_SC_LEFT_GUI}},	// This macro will go to the specified url in a new firefox tab.
-			{M_WAIT, {3}},
+			{M_WAIT, {1}},
 			{M_STRING, "firefox" },
 			{M_KEYS, {HID_KEYBOARD_SC_ENTER}},
-			{M_WAIT, {1}},
+			{M_WAIT, {3}},
 			{M_KEYS, {HID_KEYBOARD_SC_LEFT_CONTROL, HID_KEYBOARD_SC_T}},
 			{M_STRING, "https://clews.pro/projects/jank.php" },
 			{M_KEYS, {HID_KEYBOARD_SC_ENTER}},

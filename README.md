@@ -35,6 +35,11 @@ To do:
 
 *********************************
 
+![The completed jank.][image_jank]
+
 [link_clews_jank]:https://clews.pro/projects/jank.php
 [link_gitlab_macr0]:https://gitlab.com/clewsy/macr0
 [link_web_cherry_mx]:https://www.cherrymx.de/en
+
+[image_jank]:images/jank.jpg
+

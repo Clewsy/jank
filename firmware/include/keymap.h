@@ -43,8 +43,9 @@
 // run sequentially with a single keypress.
 typedef struct {
         uint8_t m_action;
-        char m_array[MAX_MACRO_CHARS];
+        char m_array[MAX_MACRO_CHARS];  // m_array is interpreted differently depending on the value of m_action.  See above.
 } macro_t;
+
 
 // Declare the key-to-pin, macro-to-pin, keymap and macromap arrays.
 extern const uint8_t key_row_array[NUM_KEY_ROWS];

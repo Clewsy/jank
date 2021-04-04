@@ -105,7 +105,9 @@
 	void EVENT_USB_Device_StartOfFrame(void);
 	void CreateKeyboardReport(USB_KeyboardReport_Data_t* const ReportData);
 	void CreateMediaControllerReport(USB_MediaControllerReport_Data_t* const MediaReportData);
-	void CreateMacroKeyReport(USB_KeyboardReport_Data_t* const ReportData, char key_code, bool upper_case);
+//	void CreateMacroKeyReport(USB_KeyboardReport_Data_t* const ReportData, char key_code, bool upper_case);
+void CreateMacroKeyReport(USB_KeyboardReport_Data_t* const ReportData, uint8_t keys[MAX_KEYS], uint8_t modifier);
+
 	void numlock_led(bool on);
 	void ProcessLEDReport(const uint8_t LEDReport);
 	void SendNextKeyboardReport(void);
@@ -114,6 +116,7 @@
 //	void SendMacroReports(const char *macro_string);
 void SendMacroReports(void);
 	void type_key(char key);
-	void SendNextMacroKeyReport(uint8_t key_code, bool upper_case);
+//	void SendNextMacroKeyReport(uint8_t key_code, bool upper_case);
+void SendNextMacroKeyReport(uint8_t key_code[MAX_KEYS], uint8_t modifiers);
 
 #endif

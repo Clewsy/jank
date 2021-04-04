@@ -255,16 +255,16 @@ void CreateMediaControllerReport(USB_MediaControllerReport_Data_t* const MediaRe
 }
 
 // Similar to CreateKeyboardReport() function but creates a report for a single specific keypress.
-void CreateMacroKeyReport(USB_KeyboardReport_Data_t* const ReportData, char key_code, bool upper_case)
+void CreateMacroKeyReport(USB_KeyboardReport_Data_t* const ReportData, uint8_t keys[MAX_KEYS], uint8_t modifier)
 {
 	// Clear the report contents.
 	memset(ReportData, 0, sizeof(USB_KeyboardReport_Data_t));
 
 	// Apply left shift key if desired character is upper-case.
-	if(upper_case == true)	ReportData->Modifier = 0b00000010;
+	ReportData->Modifier = modifier;
 
 	// Apply the character key code.
-	ReportData->KeyCode[0] = key_code;
+	for(uint8_t k = 0; k < MAX_KEYS; k++) ReportData->KeyCode[k] = keys[k];
 }
 
 // Set or clear the smd LED on the bottom of the board used to indicate the status of Num Lock.
@@ -418,56 +418,64 @@ void SendMacroReports()
 
 			else if(pgm_read_byte(&macro->m_action + (m_count * sizeof(macro_t))) == M_KEYS)
 			{
-				type_key('K');
+				uint8_t macro_keys[MAX_KEYS] = {0,0,0,0,0,0};
+				uint8_t macro_modifiers = 0;
+
+				uint8_t i = 0;
+				while((pgm_read_byte(&macro->m_string[i] + (m_count * sizeof(macro_t)))) && (i < MAX_MACRO_CHARS))
+				{
+					uint8_t current_key = (pgm_read_byte(&macro->m_string[i++] + (m_count * sizeof(macro_t))));
+
+					// Modifier keys scan values start at 0xE0, after the last keyboard modifier key scan.
+					if(current_key > HID_KEYBOARD_SC_APPLICATION)
+					{
+						// Convert the media key to a value from 0 to 7.
+						current_key -= HID_KEYBOARD_SC_LEFT_CONTROL;
+							// Shift a bit to the corresponding bit within the modifier integer.
+						macro_modifiers |= (1 << current_key);
+					}
+
+					// Regular keys scan values range from 0x00 to 0x65.
+					else  if(current_key > HID_KEYBOARD_SC_RESERVED)
+					{
+						// Skip array elements that already have a keyscan value written.
+						uint8_t j = 0;
+						while((macro_keys[j]) && (j < MAX_KEYS)) j++;
+					
+						// Only register the key if the maximum number of simultaneous keys is not reached.
+						if(i < MAX_KEYS) macro_keys[j] = current_key;
+					}
+
+				}
+				SendNextMacroKeyReport(macro_keys, macro_modifiers);
+				SendNextMacroKeyReport(0x00, false);	// Send a "no-key" after each actual char (i.e. release the key).
+
 			}
 
 			m_count++;
-
-
 		}
-//		if(pgm_read_byte((&macro->m_action)+sizeof(macro_t)) == M_STRING) type_key('X');
-//		if(pgm_read_byte((&macro->m_action)+sizeof(macro_t)+sizeof(macro_t)) == M_STRING) type_key('Y');
-
-
-
-
-		
-
-
 
 		while(scan_macro_keys()) USB_USBTask();
 
-
-
-
-//		// Loop for each character until null character reached, or max chars exceeded.
-//		uint8_t i = 0;
-//		while((pgm_read_byte(&macro[i])) && (i < MAX_MACRO_CHARS))
-//		{
-//			type_key(pgm_read_byte(&macro[i++]));
-//			USB_USBTask();	// In the lufa library.
-//		}
-//
-//		// Wait until the macro key is released (prevents repeats).
-//		while(scan_macro_keys()) USB_USBTask();
 	}
 }
 
 // Effectivley send a keyboard report but for a single character. 
 void type_key(char key)
 {
-	SendNextMacroKeyReport(char_to_code(key), upper_case_check(key));
+	uint8_t single_key[MAX_KEYS] = {char_to_code(key)};
+	SendNextMacroKeyReport(single_key, (upper_case_check(key) << 1));
 	SendNextMacroKeyReport(0x00, false);	// Send a "no-key" after each actual char (i.e. release the key).
 }
 
 // Similar to the SendNextKeyboardReport() function, but types a single key (with or without modifiers). Intended to be used
 // sequentially to "type" a string of characters - i.e. a macro.
-void SendNextMacroKeyReport(uint8_t key_code, bool upper_case)
+void SendNextMacroKeyReport(uint8_t keys[MAX_KEYS], uint8_t modifiers)
 {
 	USB_KeyboardReport_Data_t        MacroReportData;
 
 	// Create the next keyboard report for transmission to the host.
-	CreateMacroKeyReport(&MacroReportData, key_code, upper_case);
+	CreateMacroKeyReport(&MacroReportData, keys, modifiers);
 
 	// Select the Keyboard Report Endpoint.
 	Endpoint_SelectEndpoint(KEYBOARD_IN_EPADDR);

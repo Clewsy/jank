@@ -18,31 +18,37 @@ const char KEYMAP[NUM_KEY_ROWS][NUM_KEY_COLS] PROGMEM = {
 };
 
 
-// Macro definitions.  Currently just simple text strings can be used as macros.
-#define MACRO_0 "TEST_0\n"
-#define MACRO_1 "The quick brown fox "
-#define MACRO_2 "jumped over the lazy dog.\n"
-#define MACRO_3 "`1234567890-=~!@#$%^&*()_+qwertyuiop[]\\QWERTYUIOP{}|asdfghjkl;'ASDFGHJKL:\"zxcvbnm,./ZXCVBNM<>?\n"
-
-
 // The macro map array - for key strokes that are mapped as macros.
 const macro_t MACROMAP[NUM_MACRO_ROWS][NUM_MACRO_COLS][MAX_MACRO_ACTIONS] PROGMEM = 
-{ //Rows
-	{ //Cols
-		{
-			{M_STRING, "qwer"},
-			{M_STRING, "tyui"}
+{
+	{ //Row0
+		{ //Col0
+			{M_KEYS, {HID_KEYBOARD_SC_LEFT_CONTROL, HID_KEYBOARD_SC_TAB}}
 		},
-		{
-			{M_STRING, "asdf"},
-			{M_STRING, "ghjk"},
-			{M_STRING, "l;'"}
+		{ //Col1
+			{M_STRING, "Bender is great!"},
+			{M_KEYS, {HID_KEYBOARD_SC_ENTER}},
 		},
-		{
-			{M_STRING, "zxcv"},
-			{M_KEYS, "whatever"}
+		{ //Col2
+			{M_KEYS, {HID_KEYBOARD_SC_B, HID_KEYBOARD_SC_RIGHT_SHIFT}},
+			{M_KEYS, {HID_KEYBOARD_SC_E}},
+			{M_KEYS, {HID_KEYBOARD_SC_N}},
+			{M_KEYS, {HID_KEYBOARD_SC_D}},
+			{M_KEYS, {HID_KEYBOARD_SC_E}},
+			{M_KEYS, {HID_KEYBOARD_SC_R}},
+			{M_KEYS, {HID_KEYBOARD_SC_SPACE}},
+			{M_KEYS, {HID_KEYBOARD_SC_I}},
+			{M_KEYS, {HID_KEYBOARD_SC_S}},
+			{M_KEYS, {HID_KEYBOARD_SC_SPACE}},
+			{M_KEYS, {HID_KEYBOARD_SC_G}},
+			{M_KEYS, {HID_KEYBOARD_SC_R}},
+			{M_KEYS, {HID_KEYBOARD_SC_E}},
+			{M_KEYS, {HID_KEYBOARD_SC_A}},
+			{M_KEYS, {HID_KEYBOARD_SC_T}},
+			{M_KEYS, {HID_KEYBOARD_SC_1_AND_EXCLAMATION, HID_KEYBOARD_SC_RIGHT_SHIFT}},
+			{M_KEYS, {HID_KEYBOARD_SC_ENTER}}
 		},
-		{
+		{ //Col3
 			{M_STRING, "      _\n"},
 			{M_STRING, "     ( )\n"},
 			{M_STRING, "      H\n"},

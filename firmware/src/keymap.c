@@ -26,27 +26,18 @@ const macro_t MACROMAP[NUM_MACRO_ROWS][NUM_MACRO_COLS][MAX_MACRO_ACTIONS] PROGME
 			{M_KEYS, {HID_KEYBOARD_SC_LEFT_CONTROL, HID_KEYBOARD_SC_TAB}}
 		},
 		{ //Col1
-			{M_STRING, "Bender is great!"},
+			{M_KEYS, {HID_KEYBOARD_SC_LEFT_GUI}},
+			{M_WAIT, {1}},
+			{M_STRING, "firefox" },
+			{M_KEYS, {HID_KEYBOARD_SC_ENTER}},
+			{M_WAIT, {1}},
+			{M_KEYS, {HID_KEYBOARD_SC_LEFT_CONTROL, HID_KEYBOARD_SC_T}},
+			{M_STRING, "https://clews.pro/projects/jank.php" },
 			{M_KEYS, {HID_KEYBOARD_SC_ENTER}},
 		},
 		{ //Col2
-			{M_KEYS, {HID_KEYBOARD_SC_B, HID_KEYBOARD_SC_RIGHT_SHIFT}},
-			{M_KEYS, {HID_KEYBOARD_SC_E}},
-			{M_KEYS, {HID_KEYBOARD_SC_N}},
-			{M_KEYS, {HID_KEYBOARD_SC_D}},
-			{M_KEYS, {HID_KEYBOARD_SC_E}},
-			{M_KEYS, {HID_KEYBOARD_SC_R}},
-			{M_KEYS, {HID_KEYBOARD_SC_SPACE}},
-			{M_KEYS, {HID_KEYBOARD_SC_I}},
-			{M_KEYS, {HID_KEYBOARD_SC_S}},
-			{M_KEYS, {HID_KEYBOARD_SC_SPACE}},
-			{M_KEYS, {HID_KEYBOARD_SC_G}},
-			{M_KEYS, {HID_KEYBOARD_SC_R}},
-			{M_KEYS, {HID_KEYBOARD_SC_E}},
-			{M_KEYS, {HID_KEYBOARD_SC_A}},
-			{M_KEYS, {HID_KEYBOARD_SC_T}},
-			{M_KEYS, {HID_KEYBOARD_SC_1_AND_EXCLAMATION, HID_KEYBOARD_SC_RIGHT_SHIFT}},
-			{M_KEYS, {HID_KEYBOARD_SC_ENTER}}
+			{M_STRING, "Bender is great!"},
+			{M_KEYS, {HID_KEYBOARD_SC_ENTER}},
 		},
 		{ //Col3
 			{M_STRING, "      _\n"},
@@ -72,7 +63,7 @@ const macro_t MACROMAP[NUM_MACRO_ROWS][NUM_MACRO_COLS][MAX_MACRO_ACTIONS] PROGME
 };
 
 /*
-Configuration of the jank keypad.
+Row and column configuration of the jank keypad.
 
 	 COL0 COL1 COL2 COL3
 	_____________________

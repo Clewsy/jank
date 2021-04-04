@@ -323,8 +323,8 @@ void SendNextKeyboardReport(void)
 		Endpoint_ClearIN();
 	}
 
-	// If there were more keys (e.g. a full-size keyboard), this delay may not be required.
-	_delay_ms(DEBOUNCE_MS);	// Dirty delay to prevent button bounce registering as a double-press.
+	// Dirty delay to prevent button bounce registering as a double-press.
+	_delay_ms(DEBOUNCE_MS);
 }
 
 // Sends the next media controller HID report to the host, via the keyboard data endpoint.
@@ -393,41 +393,67 @@ void ReceiveNextKeyboardReport(void)
 		Endpoint_ClearOUT();
 	}
 }
+
 void SendMacroReports()
 {
+	// Read in the address of a macro that corresponds to an actuated macro keyswitch.
 	const macro_t *macro = scan_macro_keys();
 
+	// m_value is used to increment for each macro action in the macro array.
 	uint8_t m_count = 0;
 
+	// If the value returned by scan_macro_keys is not null.
 	if (macro)
 	{
+		// Loop for every valid "macro action".  Type macro_t represents a single such action and "macro" is actually the
+		// address of the first macro_t elements in an array.  This while loop will run until a null value is read which
+		// indicates the last element in the macro array.
 		while(pgm_read_byte(&macro->m_action + (m_count * sizeof(macro_t))))
 		{
+			// The m_action element of a macro_t struct identifies the succedding array (m_array) as either a string to
+			// be typed sequentially, or a combination of keys to be pressed simultaneously.
 
+			// If the macro action type is a string.
 			if(pgm_read_byte(&macro->m_action + (m_count * sizeof(macro_t))) == M_STRING)
 			{
-				uint8_t i = 0;
-				while((pgm_read_byte(&macro->m_string[i] + (m_count * sizeof(macro_t)))) && (i < MAX_MACRO_CHARS))
+				// Loop for each character in the macro array.
+				uint8_t c = 0;
+				while((pgm_read_byte(&macro->m_array[c] + (m_count * sizeof(macro_t)))) && (c < MAX_MACRO_CHARS))
 				{
-					type_key(pgm_read_byte(&macro->m_string[i++] + (m_count * sizeof(macro_t))));
-					USB_USBTask();	// In the lufa library.
+					type_key(pgm_read_byte(&macro->m_array[c++] + (m_count * sizeof(macro_t))));
+					USB_USBTask();	// Keep the USB device alive (in case of long strings).
 				}
 
-
+				// Wait until the key is released (if held) while keeping the USB device alive.
+//				while(scan_macro_keys()) USB_USBTask();
 			}
 
+			// If the macro action type is a combination of keys.
 			else if(pgm_read_byte(&macro->m_action + (m_count * sizeof(macro_t))) == M_KEYS)
 			{
-				uint8_t macro_keys[MAX_KEYS] = {0,0,0,0,0,0};
+				// Initialise an array of keys and a byte that represents the state of all modifiers.
+				uint8_t macro_keys[MAX_KEYS] = {0};
 				uint8_t macro_modifiers = 0;
 
-				uint8_t i = 0;
-				while((pgm_read_byte(&macro->m_string[i] + (m_count * sizeof(macro_t)))) && (i < MAX_MACRO_CHARS))
+				// Loop for each key identified in the macro array.
+				uint8_t k = 0;
+				while((pgm_read_byte(&macro->m_array[k] + (m_count * sizeof(macro_t)))) && (k < MAX_MACRO_CHARS))
 				{
-					uint8_t current_key = (pgm_read_byte(&macro->m_string[i++] + (m_count * sizeof(macro_t))));
+					uint8_t current_key = (pgm_read_byte(&macro->m_array[k++] + (m_count * sizeof(macro_t))));
+
+					// Regular keys scan values range from 0x00 to 0x65.
+					if(current_key <= HID_KEYBOARD_SC_APPLICATION)
+					{
+						// Skip array elements that already have a keyscan value written.
+						uint8_t j = 0;
+						while((macro_keys[j]) && (j < MAX_KEYS)) j++;
+					
+						// Only register the key if the maximum number of simultaneous keys is not reached.
+						if(j < MAX_KEYS) macro_keys[j] = current_key;
+					}
 
 					// Modifier keys scan values start at 0xE0, after the last keyboard modifier key scan.
-					if(current_key > HID_KEYBOARD_SC_APPLICATION)
+					else if(current_key <= HID_KEYBOARD_SC_RIGHT_GUI)
 					{
 						// Convert the media key to a value from 0 to 7.
 						current_key -= HID_KEYBOARD_SC_LEFT_CONTROL;
@@ -435,27 +461,59 @@ void SendMacroReports()
 						macro_modifiers |= (1 << current_key);
 					}
 
-					// Regular keys scan values range from 0x00 to 0x65.
-					else  if(current_key > HID_KEYBOARD_SC_RESERVED)
-					{
-						// Skip array elements that already have a keyscan value written.
-						uint8_t j = 0;
-						while((macro_keys[j]) && (j < MAX_KEYS)) j++;
-					
-						// Only register the key if the maximum number of simultaneous keys is not reached.
-						if(i < MAX_KEYS) macro_keys[j] = current_key;
-					}
-
 				}
+				// We now know the combination of keys and modifiers, so send the report.
 				SendNextMacroKeyReport(macro_keys, macro_modifiers);
-				SendNextMacroKeyReport(0x00, false);	// Send a "no-key" after each actual char (i.e. release the key).
+
+				// Dirty delay to prevent button bounce registering as a double-press.
+				_delay_ms(DEBOUNCE_MS);
+
+				// Wait until the key is released (if held) while keeping the USB device alive.
+//				while(scan_macro_keys()) USB_USBTask();
+
+				// Send a "no-key" (i.e. release the key/s).
+				SendNextMacroKeyReport(0x00, 0x00);
 
 			}
 
+
+			else if(pgm_read_byte(&macro->m_action + (m_count * sizeof(macro_t))) == M_WAIT)
+			{
+				uint8_t d = 0;
+				while((pgm_read_byte(&macro->m_array[d] + (m_count * sizeof(macro_t)))) && (d < MAX_MACRO_CHARS))
+				{
+					for(uint8_t seconds = (pgm_read_byte(&macro->m_array[d++] + (m_count * sizeof(macro_t))));seconds > 0; seconds--)
+					{
+						for(uint8_t quarters = 0; quarters < 4; quarters++)
+						{
+							_delay_ms(250);
+							USB_USBTask();
+						}
+					}
+				}
+
+				// Wait until the key is released (if held) while keeping the USB device alive.
+//				while(scan_macro_keys()) USB_USBTask();
+			}
+
+
+
+
+
+
+
+
+
+
+			// Increment so the next loop starts at the next macro_t.
 			m_count++;
 		}
 
-		while(scan_macro_keys()) USB_USBTask();
+// Wait until the key is released (if held) while keeping the USB device alive.
+while(scan_macro_keys()) USB_USBTask();
+// Send a "no-key" (i.e. release the key/s).
+SendNextMacroKeyReport(0x00, 0x00);
+
 
 	}
 }
@@ -465,7 +523,7 @@ void type_key(char key)
 {
 	uint8_t single_key[MAX_KEYS] = {char_to_code(key)};
 	SendNextMacroKeyReport(single_key, (upper_case_check(key) << 1));
-	SendNextMacroKeyReport(0x00, false);	// Send a "no-key" after each actual char (i.e. release the key).
+	SendNextMacroKeyReport(0x00, 0x00);	// Send a "no-key" after each actual char (i.e. release the key).
 }
 
 // Similar to the SendNextKeyboardReport() function, but types a single key (with or without modifiers). Intended to be used

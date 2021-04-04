@@ -7,7 +7,7 @@ const uint8_t macro_row_array[]	= {ROW0};
 const uint8_t macro_col_array[]	= {COL0, COL1, COL2, COL3};
 
 // Number pad key definitions.
-// KEY_XY where X:Row Number, Y:Column Number.
+// KEY_X_Y where X:Row Number, Y:Column Number.
 #define KEY_1_0 HID_KEYBOARD_SC_NUM_LOCK
 #define KEY_1_1 HID_KEYBOARD_SC_KEYPAD_SLASH
 #define KEY_1_2 HID_KEYBOARD_SC_KEYPAD_ASTERISK

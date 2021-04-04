@@ -25,7 +25,7 @@ To do:
     - [X] PCB layout design.
     - [X] Parts order.
     - [X] PCB assembly.
-    - [ ] Enclosure.
+    - [X] Enclosure.
 - [X] Firmware
     - [X] LED control.
     - [X] Regular keystrokes.

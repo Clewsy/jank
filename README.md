@@ -16,23 +16,22 @@ Features include:
 Although any key can be configured to function as any keystroke or macro, I use jank with my laptop as a traditional numerical keypad.  Only the top four keys are configured as macros.
 
 *********************************
-**Note this is a work-in-progress**
 
 To do:
 
-- [ ] Hardware
+- [X] Hardware
     - [X] Parts selection.
     - [X] Schematic design.
     - [X] PCB layout design.
     - [X] Parts order.
     - [X] PCB assembly.
     - [ ] Enclosure.
-- [ ] Firmware
+- [X] Firmware
     - [X] LED control.
     - [X] Regular keystrokes.
     - [X] Num lock LED.
     - [X] Simple macros.
-    - [ ] Complex macros.
+    - [X] Complex macros.
 
 *********************************
 

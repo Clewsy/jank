@@ -1,3 +1,6 @@
+// The keyscan.h and keyscan.c files are intended to manage the hardware level.  I.e. correlate GPIO status to desired key-presses.
+// Converting the desired key-presses into HID reports is handled by the Keyboard.c and Keyboard.h files.
+
 #include "keyscan.h"
 
 // Initialise the gpio for scanning rows and columns.
@@ -47,7 +50,7 @@ void handle_key(char key, keyscan_report_t *keyscan_report)
 	}
 }
 
-
+// Returns the address of a keyscan report which contains the key/modifier key-presses to be sent to the host.
 void create_keyscan_report(keyscan_report_t *keyscan_report)
 {
 	// Start with a blank keyscan report.
@@ -68,6 +71,7 @@ void create_keyscan_report(keyscan_report_t *keyscan_report)
 			// If the button in the current row and column is pressed, handle it.
 			if(~COLS_PINS & (1 << key_col_array[c]))
 			{
+				// Determine desired keypresses.
 				handle_key(pgm_read_byte(&KEYMAP[r][c]), keyscan_report);
 			}
 		}
@@ -81,9 +85,6 @@ void create_keyscan_report(keyscan_report_t *keyscan_report)
 // Note: only the first detected macro will be registered.  I.e. simultaneous macro key-presses is not possible.
 const macro_t *scan_macro_keys(void)
 {
-
-//	static const char NO_MACRO[] PROGMEM = "";	// Needed when no macro key is pressed.
-
 	// Loop through for each row.
 	for(uint8_t r = 0; r < sizeof(macro_row_array); r++)
 	{
@@ -99,6 +100,7 @@ const macro_t *scan_macro_keys(void)
 			// If the button in the current row and column is pressed, handle it.
 			if(~COLS_PINS & (1 << macro_col_array[c]))
 			{
+				// Returns the address of the desired macro array.
 				return(&MACROMAP[r][c][0]);
 			}
 		}
@@ -162,7 +164,7 @@ uint8_t char_to_code(char key)
 	}
 }
 
-// Determines if a shift modifier is required to reproduce a character.
+// Determines if a shift modifier is required to "type" a character (e.g. for capital letters).
 bool upper_case_check(char key)
 {
 	switch (key)

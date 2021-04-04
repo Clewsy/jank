@@ -423,9 +423,6 @@ void SendMacroReports()
 					type_key(pgm_read_byte(&macro->m_array[c++] + (m_count * sizeof(macro_t))));
 					USB_USBTask();	// Keep the USB device alive (in case of long strings).
 				}
-
-				// Wait until the key is released (if held) while keeping the USB device alive.
-//				while(scan_macro_keys()) USB_USBTask();
 			}
 
 			// If the macro action type is a combination of keys.
@@ -460,7 +457,6 @@ void SendMacroReports()
 							// Shift a bit to the corresponding bit within the modifier integer.
 						macro_modifiers |= (1 << current_key);
 					}
-
 				}
 				// We now know the combination of keys and modifiers, so send the report.
 				SendNextMacroKeyReport(macro_keys, macro_modifiers);
@@ -468,53 +464,38 @@ void SendMacroReports()
 				// Dirty delay to prevent button bounce registering as a double-press.
 				_delay_ms(DEBOUNCE_MS);
 
-				// Wait until the key is released (if held) while keeping the USB device alive.
-//				while(scan_macro_keys()) USB_USBTask();
-
 				// Send a "no-key" (i.e. release the key/s).
 				SendNextMacroKeyReport(0x00, 0x00);
-
 			}
 
-
+			// If the macro action type is a delay/pause.
 			else if(pgm_read_byte(&macro->m_action + (m_count * sizeof(macro_t))) == M_WAIT)
 			{
+				// Loop through each element of the macro array.
 				uint8_t d = 0;
 				while((pgm_read_byte(&macro->m_array[d] + (m_count * sizeof(macro_t)))) && (d < MAX_MACRO_CHARS))
 				{
+					// Each element of the array represents a number of seconds to pause.
 					for(uint8_t seconds = (pgm_read_byte(&macro->m_array[d++] + (m_count * sizeof(macro_t))));seconds > 0; seconds--)
 					{
+						// Each second-long delay is broken into 4 quarter-seconds.
 						for(uint8_t quarters = 0; quarters < 4; quarters++)
 						{
-							_delay_ms(250);
-							USB_USBTask();
+							_delay_ms(250);	// Quarter-second delay.
+							USB_USBTask();	// Keep the USB device alive.
 						}
 					}
 				}
-
-				// Wait until the key is released (if held) while keeping the USB device alive.
-//				while(scan_macro_keys()) USB_USBTask();
 			}
-
-
-
-
-
-
-
-
-
 
 			// Increment so the next loop starts at the next macro_t.
 			m_count++;
 		}
 
-// Wait until the key is released (if held) while keeping the USB device alive.
-while(scan_macro_keys()) USB_USBTask();
-// Send a "no-key" (i.e. release the key/s).
-SendNextMacroKeyReport(0x00, 0x00);
-
-
+		// Wait until the key is released (if held) while keeping the USB device alive.
+		while(scan_macro_keys()) USB_USBTask();
+		// Send a "no-key" (i.e. release the key/s).
+		SendNextMacroKeyReport(0x00, 0x00);
 	}
 }
 

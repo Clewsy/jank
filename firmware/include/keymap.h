@@ -37,7 +37,7 @@
 #define M_NULL	        0x00
 #define M_STRING	0x01    // If macro->m_action = M_STRING, then macro->m_array is a character string to be typed.
 #define M_KEYS		0x02    // If macro->m_action = M_KEYS, then macro->m_array is combination of keys to be pressed.
-#define M_WAIT          0x03
+#define M_WAIT          0x03    // If macro->m_action = M_WAIT, then macro->m_array is an array of integer seconds to pause.
 
 // Define the structure of a macro.  The macros are actually defined as an array of type macro_t so that multiple macros can be
 // run sequentially with a single keypress.

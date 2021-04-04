@@ -8,4 +8,4 @@ firmware/*.sym
 firmware/obj
 firmware/lib/LUFA
 hardware/gerber
-.vscode
+

@@ -1,0 +1,26 @@
+// These c/c++ properties configurations are only needed for VSCode intellisense to work (mostly) as expected.
+// The project will still compile and work without this file.
+{
+        "configurations": [
+            {
+                "name": "Linux",
+                "includePath": [
+                    "${workspaceFolder}/**",    // Find headers etc in lib/ and include/
+                    "/usr/lib/avr/include",
+                    "/usr/lib/avr/include/avr"
+                ],
+                "defines": [
+                    "__AVR_ATmega32U4__",           // Define for avr libraries.
+                    "__ATmega32U4__",               // Define for avr libraries.
+                    "__AVR_DEV_LIB_NAME__=m32u4",   // Define for avr libraries.
+                    "USE_STATIC_OPTIONS"            // Define for LUFA library (specifically USB_Init() function).
+                ],
+                "compilerPath": "/usr/bin/gcc",
+                "cStandard": "gnu17",
+                "cppStandard": "gnu++14",
+                "intelliSenseMode": "linux-gcc-x64"
+            }
+        ],
+        "version": 4
+    }
+    

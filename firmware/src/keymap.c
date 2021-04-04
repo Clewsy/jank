@@ -23,7 +23,7 @@ const macro_t MACROMAP[NUM_MACRO_ROWS][NUM_MACRO_COLS][MAX_MACRO_ACTIONS] PROGME
 {
 	{ //Row0
 		{ //Col0
-			{M_KEYS, {HID_KEYBOARD_SC_LEFT_CONTROL, HID_KEYBOARD_SC_TAB}}
+			{M_KEYS, {HID_KEYBOARD_SC_LEFT_GUI, HID_KEYBOARD_SC_T}},
 		},
 		{ //Col1
 			{M_KEYS, {HID_KEYBOARD_SC_LEFT_GUI}},
@@ -36,10 +36,6 @@ const macro_t MACROMAP[NUM_MACRO_ROWS][NUM_MACRO_COLS][MAX_MACRO_ACTIONS] PROGME
 			{M_KEYS, {HID_KEYBOARD_SC_ENTER}},
 		},
 		{ //Col2
-			{M_STRING, "Bender is great!"},
-			{M_KEYS, {HID_KEYBOARD_SC_ENTER}},
-		},
-		{ //Col3
 			{M_STRING, "      _\n"},
 			{M_STRING, "     ( )\n"},
 			{M_STRING, "      H\n"},
@@ -58,6 +54,10 @@ const macro_t MACROMAP[NUM_MACRO_ROWS][NUM_MACRO_COLS][MAX_MACRO_ACTIONS] PROGME
 			{M_STRING, "|    '''''' |\n"},
 			{M_STRING, "'-.__   __.-'\n"},
 			{M_STRING, "     '''\n"}
+		},
+		{ //Col3
+			{M_STRING, "Bender is great!" },
+			{M_KEYS, {HID_KEYBOARD_SC_ENTER}},
 		}
 	}
 };

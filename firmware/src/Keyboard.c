@@ -408,88 +408,99 @@ void SendMacroReports()
 		// Loop for every valid "macro action".  Type macro_t represents a single such action and "macro" is actually the
 		// address of the first macro_t elements in an array.  This while loop will run until a null value is read which
 		// indicates the last element in the macro array.
-		while(pgm_read_byte(&macro->m_action + (m_count * sizeof(macro_t))))
+		uint8_t current_macro_action = pgm_read_byte(&macro->m_action + (m_count * sizeof(macro_t)));
+		while(current_macro_action)
 		{
 			// The m_action element of a macro_t struct identifies the succedding array (m_array) as either a string to
-			// be typed sequentially, or a combination of keys to be pressed simultaneously.
+			// be typed sequentially, a combination of keys to be pressed simultaneously, a media keypress or a delay.
 
-			// If the macro action type is a string.
-			if(pgm_read_byte(&macro->m_action + (m_count * sizeof(macro_t))) == M_STRING)
+			switch(current_macro_action)
 			{
-				// Loop for each character in the macro array.
-				uint8_t c = 0;
-				while((pgm_read_byte(&macro->m_array[c] + (m_count * sizeof(macro_t)))) && (c < MAX_MACRO_CHARS))
-				{
-					type_key(pgm_read_byte(&macro->m_array[c++] + (m_count * sizeof(macro_t))));
-					USB_USBTask();	// Keep the USB device alive (in case of long strings).
-				}
-			}
+				// If the macro action type is a string.
+				case M_STRING: ;
 
-			// If the macro action type is a combination of keys.
-			else if(pgm_read_byte(&macro->m_action + (m_count * sizeof(macro_t))) == M_KEYS)
-			{
-				// Initialise an array of keys and a byte that represents the state of all modifiers.
-				uint8_t macro_keys[MAX_KEYS] = {0};
-				uint8_t macro_modifiers = 0;
-
-				// Loop for each key identified in the macro array.
-				uint8_t k = 0;
-				while((pgm_read_byte(&macro->m_array[k] + (m_count * sizeof(macro_t)))) && (k < MAX_MACRO_CHARS))
-				{
-					uint8_t current_key = (pgm_read_byte(&macro->m_array[k++] + (m_count * sizeof(macro_t))));
-
-					// Regular keys scan values range from 0x00 to 0x65.
-					if(current_key <= HID_KEYBOARD_SC_APPLICATION)
+					// Loop for each character in the macro array.
+					uint8_t c = 0;
+					while((pgm_read_byte(&macro->m_array[c] + (m_count * sizeof(macro_t)))) && (c < MAX_MACRO_CHARS))
 					{
-						// Skip array elements that already have a keyscan value written.
-						uint8_t j = 0;
-						while((macro_keys[j]) && (j < MAX_KEYS)) j++;
-					
-						// Only register the key if the maximum number of simultaneous keys is not reached.
-						if(j < MAX_KEYS) macro_keys[j] = current_key;
+						type_key(pgm_read_byte(&macro->m_array[c++] + (m_count * sizeof(macro_t))));
+						USB_USBTask();	// Keep the USB device alive (in case of long strings).
 					}
 
-					// Modifier keys scan values start at 0xE0, after the last keyboard modifier key scan.
-					else if(current_key <= HID_KEYBOARD_SC_RIGHT_GUI)
+					break;
+	
+				// If the macro action type is a combination of keys.
+				case M_KEYS: ;
+
+					// Initialise an array of keys and a byte that represents the state of all modifiers.
+					uint8_t macro_keys[MAX_KEYS] = {0};
+					uint8_t macro_modifiers = 0;
+
+					// Loop for each key identified in the macro array.
+					uint8_t k = 0;
+					while((pgm_read_byte(&macro->m_array[k] + (m_count * sizeof(macro_t)))) && (k < MAX_MACRO_CHARS))
 					{
-						// Convert the media key to a value from 0 to 7.
-						current_key -= HID_KEYBOARD_SC_LEFT_CONTROL;
-							// Shift a bit to the corresponding bit within the modifier integer.
-						macro_modifiers |= (1 << current_key);
-					}
-				}
-				// We now know the combination of keys and modifiers, so send the report.
-				SendNextMacroKeyReport(macro_keys, macro_modifiers);
+						uint8_t current_key = (pgm_read_byte(&macro->m_array[k++] + (m_count * sizeof(macro_t))));
 
-				// Dirty delay to prevent button bounce registering as a double-press.
-				_delay_ms(DEBOUNCE_MS);
-
-				// Send a "no-key" (i.e. release the key/s).
-				SendNextMacroKeyReport(0x00, 0x00);
-			}
-
-			// If the macro action type is a delay/pause.
-			else if(pgm_read_byte(&macro->m_action + (m_count * sizeof(macro_t))) == M_WAIT)
-			{
-				// Loop through each element of the macro array.
-				uint8_t d = 0;
-				while((pgm_read_byte(&macro->m_array[d] + (m_count * sizeof(macro_t)))) && (d < MAX_MACRO_CHARS))
-				{
-					// Each element of the array represents a number of seconds to pause.
-					for(uint8_t seconds = (pgm_read_byte(&macro->m_array[d++] + (m_count * sizeof(macro_t))));seconds > 0; seconds--)
-					{
-						// Each second-long delay is broken into 4 quarter-seconds.
-						for(uint8_t quarters = 0; quarters < 4; quarters++)
+						// Regular keys scan values range from 0x00 to 0x65.
+						if(current_key <= HID_KEYBOARD_SC_APPLICATION)
 						{
-							_delay_ms(250);	// Quarter-second delay.
-							USB_USBTask();	// Keep the USB device alive.
+							// Skip array elements that already have a keyscan value written.
+							uint8_t j = 0;
+							while((macro_keys[j]) && (j < MAX_KEYS)) j++;
+					
+							// Only register the key if the max simultaneous keys is not reached.
+							if(j < MAX_KEYS) macro_keys[j] = current_key;
+						}
+
+						// Modifier keys scan values start at 0xE0 (after  last keyboard modifier key scan).
+						else if(current_key <= HID_KEYBOARD_SC_RIGHT_GUI)
+						{
+							// Convert the media key to a value from 0 to 7.
+							current_key -= HID_KEYBOARD_SC_LEFT_CONTROL;
+							// Shift a bit to the corresponding bit within the modifier integer.
+							macro_modifiers |= (1 << current_key);
 						}
 					}
-				}
+
+					// We now know the combination of keys and modifiers, so send the report.
+					SendNextMacroKeyReport(macro_keys, macro_modifiers);
+
+					// Dirty delay to prevent button bounce registering as a double-press.
+					_delay_ms(DEBOUNCE_MS);
+
+					// Send a "no-key" (i.e. release the key/s).
+					SendNextMacroKeyReport(0x00, 0x00);
+
+					break;
+
+				// If the macro action type is a delay/pause.
+				case M_WAIT: ;
+
+					// Loop through each element of the macro array.
+					uint8_t d = 0;
+					while((pgm_read_byte(&macro->m_array[d] + (m_count * sizeof(macro_t)))) && (d < MAX_MACRO_CHARS))
+					{
+						// Each element of the array represents a number of seconds to pause.
+						for(uint8_t seconds = (pgm_read_byte(&macro->m_array[d++] + (m_count * sizeof(macro_t))));seconds > 0; seconds--)
+						{
+							// Each second-long delay is broken into 4 quarter-seconds.
+							for(uint8_t quarters = 0; quarters < 4; quarters++)
+							{
+								_delay_ms(250);	// Quarter-second delay.
+								USB_USBTask();	// Keep the USB device alive.
+							}
+						}
+					}
+
+					break;
 			}
 
-			// Increment so the next loop starts at the next macro_t.
+			// Increment the macro action counter.
 			m_count++;
+
+			// Update the current macro to the next macro_t in memory.
+			current_macro_action = pgm_read_byte(&macro->m_action + (m_count * sizeof(macro_t)));
 		}
 
 		// Wait until the key is released (if held) while keeping the USB device alive.
@@ -535,8 +546,8 @@ void HID_Task(void)
 	// Device must be connected and configured for the task to run.
 	if (USB_DeviceState != DEVICE_STATE_Configured) return;
 
-	// Check for and action any key presses designated as macros.
-	SendMacroReports();
+	// Check for and action any key presses designated as macros.  Only if at least one macro is defined.
+	if(pgm_read_byte(&MACROMAP[0][0][0]))	SendMacroReports();
 
 	// Update the keyscan report - will be used for creating both the keyboard and media controller reports.
 	create_keyscan_report(&keyscan_report);

@@ -23,37 +23,37 @@
 // fuse bytes).  It must be cleared (i.e. set to 1!) otherwise PF4 and PF5 cannot be used as GPIO.  Out of the box the AtMega32U4
 // low fuse (lfuse) byte was set to 0x99.  Writing  this to 0xD9 disabled JTAG. 
 
-// Total number of rows and columns that should be identified as regular keystrokes or macros.
-#define NUM_KEY_ROWS    5
-#define NUM_KEY_COLS    4
-#define NUM_MACRO_ROWS  1
-#define NUM_MACRO_COLS  4
+// Maximum number of rows and columns that should be identified as regular keystrokes or macros.
+#define MAX_NUM_KEY_ROWS	6
+#define MAX_NUM_KEY_COLS	4
+#define MAX_NUM_MACRO_ROWS	6
+#define MAX_NUM_MACRO_COLS	4
 
 // If the number of characters in a macro string defined in keymap.c exceeds this value, the macro will be truncated.
-#define MAX_MACRO_CHARS         50
-#define MAX_MACRO_ACTIONS       50
+#define MAX_MACRO_CHARS		40
+#define MAX_MACRO_ACTIONS	20
 
 // Identifiers used with macro_t (m_action element) to determine what to do with the macro_t array element.
 #define M_NULL	        0x00
-#define M_STRING	0x01    // If macro->m_action = M_STRING, then macro->m_array is a character string to be typed.
-#define M_KEYS		0x02    // If macro->m_action = M_KEYS, then macro->m_array is combination of keys to be pressed.
-#define M_WAIT          0x03    // If macro->m_action = M_WAIT, then macro->m_array is an array of integer seconds to pause.
+#define M_STRING	0x01	// If macro->m_action = M_STRING, then macro->m_array is a character string to be typed.
+#define M_KEYS		0x02	// If macro->m_action = M_KEYS, then macro->m_array is combination of keys to be pressed.
+#define M_WAIT          0x03	// If macro->m_action = M_WAIT, then macro->m_array is an array of integer seconds to pause.
 
 // Define the structure of a macro.  The macros are actually defined as an array of type macro_t so that multiple macros can be
 // run sequentially with a single keypress.
 typedef struct {
-        uint8_t m_action;
-        char m_array[MAX_MACRO_CHARS];  // m_array is interpreted differently depending on the value of m_action.  See above.
+	uint8_t m_action;
+	char m_array[MAX_MACRO_CHARS];  // m_array is interpreted differently depending on the value of m_action.  See above.
 } macro_t;
 
 
 // Declare the key-to-pin, macro-to-pin, keymap and macromap arrays.
-extern const uint8_t key_row_array[NUM_KEY_ROWS];
-extern const uint8_t key_col_array[NUM_KEY_COLS];
-extern const uint8_t macro_row_array[NUM_MACRO_ROWS];
-extern const uint8_t macro_col_array[NUM_MACRO_COLS];
-extern const char KEYMAP[NUM_KEY_ROWS][NUM_KEY_COLS];
-extern const macro_t MACROMAP[NUM_MACRO_ROWS][NUM_MACRO_COLS][MAX_MACRO_ACTIONS];
+extern const uint8_t key_row_array[MAX_NUM_KEY_ROWS];
+extern const uint8_t key_col_array[MAX_NUM_KEY_COLS];
+extern const uint8_t macro_row_array[MAX_NUM_MACRO_ROWS];
+extern const uint8_t macro_col_array[MAX_NUM_MACRO_COLS];
+extern const char KEYMAP[MAX_NUM_KEY_ROWS][MAX_NUM_KEY_COLS];
+extern const macro_t MACROMAP[MAX_NUM_MACRO_ROWS][MAX_NUM_MACRO_COLS][MAX_MACRO_ACTIONS];
 
 // Key scan-codes:
 // Note these are defined in the lufa library file LUFA/Drivers/USB/Class/Common/HIDClassCommon.h but repeated again

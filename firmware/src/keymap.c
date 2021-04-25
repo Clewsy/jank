@@ -1,5 +1,63 @@
 #include "keymap.h"
 
+// This enabled keymap.h configuration does not use macros.  The numerical keypad is configured as a numerical keypad and the four
+// top row keys are configured for media control.  See the commented section below for example macro configurations. 
+
+// Define the physical row and column pins on the microcontroller to be scanned for key presses.
+const uint8_t key_row_array[]	= {ROW0, ROW1, ROW2, ROW3, ROW4, ROW5};
+const uint8_t key_col_array[]	= {COL0, COL1, COL2, COL3};
+const uint8_t macro_row_array[]	= {};
+const uint8_t macro_col_array[]	= {};
+
+// Number pad key definitions.
+// KEY_X_Y where X:Row Number, Y:Column Number.
+#define KEY_0_0 HID_MEDIACONTROLLER_SC_TOGGLE
+#define KEY_0_1 HID_MEDIACONTROLLER_SC_STOP
+#define KEY_0_2 HID_MEDIACONTROLLER_SC_PREVIOUS
+#define KEY_0_3 HID_MEDIACONTROLLER_SC_NEXT
+#define KEY_1_0 HID_KEYBOARD_SC_NUM_LOCK
+#define KEY_1_1 HID_KEYBOARD_SC_KEYPAD_SLASH
+#define KEY_1_2 HID_KEYBOARD_SC_KEYPAD_ASTERISK
+#define KEY_1_3 HID_KEYBOARD_SC_KEYPAD_MINUS
+#define KEY_2_0 HID_KEYBOARD_SC_KEYPAD_7_AND_HOME
+#define KEY_2_1 HID_KEYBOARD_SC_KEYPAD_8_AND_UP_ARROW
+#define KEY_2_2 HID_KEYBOARD_SC_KEYPAD_9_AND_PAGE_UP
+#define KEY_2_3 HID_KEYBOARD_SC_KEYPAD_PLUS
+#define KEY_3_0 HID_KEYBOARD_SC_KEYPAD_4_AND_LEFT_ARROW
+#define KEY_3_1 HID_KEYBOARD_SC_KEYPAD_5
+#define KEY_3_2 HID_KEYBOARD_SC_KEYPAD_6_AND_RIGHT_ARROW
+#define KEY_3_3 0x00	// No key here.
+#define KEY_4_0 HID_KEYBOARD_SC_KEYPAD_1_AND_END
+#define KEY_4_1 HID_KEYBOARD_SC_KEYPAD_2_AND_DOWN_ARROW
+#define KEY_4_2 HID_KEYBOARD_SC_KEYPAD_3_AND_PAGE_DOWN
+#define KEY_4_3 HID_KEYBOARD_SC_KEYPAD_ENTER
+#define KEY_5_0 HID_KEYBOARD_SC_KEYPAD_0_AND_INSERT
+#define KEY_5_1 0x00	// No key here.
+#define KEY_5_2 HID_KEYBOARD_SC_KEYPAD_DOT_AND_DELETE
+#define KEY_5_3 0x00	// No key here.
+
+// The key map array - for regular key strokes including media control keys.
+const char KEYMAP[MAX_NUM_KEY_ROWS][MAX_NUM_KEY_COLS] PROGMEM = {
+	//Col 0   Col 1    Col 2    Col 3
+	{KEY_0_0, KEY_0_1, KEY_0_2, KEY_0_3}, // Row 0
+	{KEY_1_0, KEY_1_1, KEY_1_2, KEY_1_3}, // Row 1
+	{KEY_2_0, KEY_2_1, KEY_2_2, KEY_2_3}, // Row 2
+	{KEY_3_0, KEY_3_1, KEY_3_2, KEY_3_3}, // Row 3
+	{KEY_4_0, KEY_4_1, KEY_4_2, KEY_4_3}, // Row 4
+	{KEY_5_0, KEY_5_1, KEY_5_2, KEY_5_3}  // Row 5
+};
+
+// The macro map array - for key strokes that are mapped as macros.
+const macro_t MACROMAP[MAX_NUM_MACRO_ROWS][MAX_NUM_MACRO_COLS][MAX_MACRO_ACTIONS] PROGMEM = {};
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////// keymap.h demonstration //////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/*
+
 // Define the physical row and column pins on the microcontroller to be scanned for key presses.
 const uint8_t key_row_array[]	= {ROW1, ROW2, ROW3, ROW4, ROW5};
 const uint8_t key_col_array[]	= {COL0, COL1, COL2, COL3};
@@ -30,8 +88,9 @@ const uint8_t macro_col_array[]	= {COL0, COL1, COL2, COL3};
 #define KEY_5_3 0x00	// No key here.
 
 // The key map array - for regular key strokes including media control keys.
-const char KEYMAP[NUM_KEY_ROWS][NUM_KEY_COLS] PROGMEM = {
-	//Col 0  Col 1   Col 2   Col 3
+const char KEYMAP[MAX_NUM_KEY_ROWS][MAX_NUM_KEY_COLS] PROGMEM = {
+	//Col 0   Col 1    Col 2    Col 3
+//	{KEY_0_0, KEY_0_1, KEY_0_2, KEY_0_3}, // Row 0
 	{KEY_1_0, KEY_1_1, KEY_1_2, KEY_1_3}, // Row 1
 	{KEY_2_0, KEY_2_1, KEY_2_2, KEY_2_3}, // Row 2
 	{KEY_3_0, KEY_3_1, KEY_3_2, KEY_3_3}, // Row 3
@@ -40,7 +99,7 @@ const char KEYMAP[NUM_KEY_ROWS][NUM_KEY_COLS] PROGMEM = {
 };
 
 // The macro map array - for key strokes that are mapped as macros.
-const macro_t MACROMAP[NUM_MACRO_ROWS][NUM_MACRO_COLS][MAX_MACRO_ACTIONS] PROGMEM = 
+const macro_t MACROMAP[MAX_NUM_MACRO_ROWS][MAX_NUM_MACRO_COLS][MAX_MACRO_ACTIONS] PROGMEM =
 {
 	{ //Row0
 		{ //Col0
@@ -51,7 +110,7 @@ const macro_t MACROMAP[NUM_MACRO_ROWS][NUM_MACRO_COLS][MAX_MACRO_ACTIONS] PROGME
 			{M_WAIT, {1}},
 			{M_STRING, "firefox" },
 			{M_KEYS, {HID_KEYBOARD_SC_ENTER}},
-			{M_WAIT, {3}},
+			{M_WAIT, {2}},
 			{M_KEYS, {HID_KEYBOARD_SC_LEFT_CONTROL, HID_KEYBOARD_SC_T}},
 			{M_STRING, "https://clews.pro/projects/jank.php" },
 			{M_KEYS, {HID_KEYBOARD_SC_ENTER}},
@@ -82,6 +141,8 @@ const macro_t MACROMAP[NUM_MACRO_ROWS][NUM_MACRO_COLS][MAX_MACRO_ACTIONS] PROGME
 		}
 	}
 };
+*/
+
 
 /*
 Row and column configuration of the jank keypad.

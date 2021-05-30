@@ -36,7 +36,7 @@ void hardware_init(void)
 }
 
 // Main program entry point.
- int main(void)
+int main(void)
 {
 	hardware_init();
 	GlobalInterruptEnable();

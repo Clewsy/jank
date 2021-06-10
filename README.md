@@ -16,6 +16,8 @@ Features include:
 
 Although any key can be configured to function as any keystroke or macro, I use jank with my laptop as a traditional numerical keypad.  Only the top four keys are configured as macros.
 
+Proudly mentioned at [hackaday.com][link_hackaday_jank].
+
 *********************************
 
 To do:
@@ -40,6 +42,7 @@ To do:
 
 [link_clews_jank]:https://clews.pro/projects/jank.php
 [link_gitlab_macr0]:https://gitlab.com/clewsy/macr0
+[link_hackaday_jank]:https://hackaday.com/2021/06/08/custom-num-pad-does-double-duty-as-macro-pad/
 [link_hackaday.io_jank]:https://hackaday.io/project/180104-jank
 [link_web_cherry_mx]:https://www.cherrymx.de/en
 
